@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Portfolio | DS_Capture',
     description: '',
-    url: 'https://www.deinedomain.de/about',
+    url: 'https://ds-capture.de/portfolio',
     siteName: 'DS_Capture',
     locale: 'de_DE',
     type: 'website',
