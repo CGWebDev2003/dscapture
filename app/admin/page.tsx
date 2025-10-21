@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { verifyAdminAccess } from "@/lib/verifyAdminAccess";
 import LogoutButton from '@/components/logoutButton/LogoutButton';
 
 import styles from "./page.module.css";
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdminPage() {
+export default async function AdminPage() {
+    const user = await verifyAdminAccess();
+
     return(
       <div className={styles.adminContent}>
         <h1>Admin</h1>
