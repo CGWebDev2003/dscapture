@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import "./page.module.css";
+import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: 'Portfolio | DS_Capture',
@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
     return(
+      <div className={styles.blogContent}>
         <h1>Portfolio</h1>
+      </div>
     );
 }

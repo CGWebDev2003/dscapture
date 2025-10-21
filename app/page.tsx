@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div>
+    <div className={styles.homeContent}>
       <h1>Home</h1>
     </div>
   );
