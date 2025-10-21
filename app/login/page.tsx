@@ -30,18 +30,22 @@ export default function LoginPage() {
     if (data.user) {
       Cookies.set("userId", data.user.id, { expires: 7 });
 
-      const { data: client, error: clientError } = await supabase
-        .from("users")
+      const { data: adminUser, error: clientError } = await supabase
+        .from("adminUsers")
         .select("role")
-        .eq("userId", data.user.id)
-        .single();
+        .eq("user_id", data.user.id)
+        .maybeSingle(); // ✅ gibt kein Error, wenn kein Datensatz gefunden wird
 
       if (clientError) {
-        console.error("Fehler beim Laden der Client-Daten:", clientError);
+        console.error("Fehler beim Laden der Client-Daten:", clientError.message);
       }
 
-      if (client?.role) {
-        Cookies.set("role", client.role, { expires: 7 });
+      if (!adminUser) {
+        console.warn("Kein Admin-Eintrag für diesen Benutzer gefunden.");
+      }
+
+      if (adminUser?.role) {
+        Cookies.set("role", adminUser.role, { expires: 7 });
       }
 
       // await logActivity(
