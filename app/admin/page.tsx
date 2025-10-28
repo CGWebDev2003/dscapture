@@ -1,29 +1,24 @@
-import type { Metadata } from 'next';
-import { verifyAdminAccess } from "@/lib/verifyAdminAccess";
-import LogoutButton from '@/components/logoutButton/LogoutButton';
+"use client";
 
+import { useVerifyAdminAccess } from "../../lib/verifyAdminAccess";
+import LogoutButton from "@/components/logoutButton/LogoutButton";
 import styles from "./page.module.css";
 
-export const metadata: Metadata = {
-  title: 'Admin | DS_Capture',
-  description: '',
-  openGraph: {
-    title: 'Admin | DS_Capture',
-    description: '',
-    url: 'https://ds-capture.de/admin',
-    siteName: 'DS_Capture',
-    locale: 'de_DE',
-    type: 'website',
-  },
-};
+export default function AdminPage() {
+  // 👇 führt clientseitig den Zugriffsschutz aus
+  const { loading, adminUser } = useVerifyAdminAccess();
 
-export default async function AdminPage() {
-    const user = await verifyAdminAccess();
+  if (loading) {
+    return <div className={styles.adminContent}>Überprüfung läuft...</div>;
+  }
 
-    return(
-      <div className={styles.adminContent}>
-        <h1>Admin</h1>
-        <LogoutButton />
-      </div>
-    );
+  return (
+    <div className={styles.adminContent}>
+      <h1>Adminbereich</h1>
+      <p>Willkommen, {adminUser?.email}</p>
+      <p>Rolle: {adminUser?.role}</p>
+
+      <LogoutButton />
+    </div>
+  );
 }

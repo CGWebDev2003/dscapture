@@ -1,0 +1,20 @@
+.wrapper {
+  position: relative;
+  width: 600px;
+  height: 400px;
+  overflow: hidden;
+}
+
+.background {
+  object-fit: cover;
+  z-index: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%; /* Mitte vertikal */
+  left: 50%; /* Mitte horizontal */
+  transform: translate(-50%, -50%); /* exakt zentrieren */
+  z-index: 2;
+  pointer-events: none; /* optional, damit das Overlay keine Klicks blockiert */
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from "next/image";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,24 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className={styles.homeContent}>
-      <h1>Home</h1>
+      <div className={styles.wrapper}>
+        {/* Hintergrundbild */}
+        <Image
+          src="/DJI_0727.jpg"
+          alt="Hintergrund"
+          fill
+          className={styles.background}
+        />
+
+        {/* Überlagerndes Bild */}
+        <Image
+          src="/dawid3.jpeg"
+          alt="Overlay"
+          width={200}
+          height={200}
+          className={styles.overlay}
+        />
+      </div>
     </div>
   );
 }
