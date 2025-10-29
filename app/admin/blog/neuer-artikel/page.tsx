@@ -39,6 +39,14 @@ export default function BlogCreatePage() {
     e.preventDefault();
     setLoading(true);
 
+    if (!userId) {
+      alert(
+        "Fehler beim Hochladen des Cover-Bildes: Benutzerinformation nicht gefunden. Bitte erneut anmelden.",
+      );
+      setLoading(false);
+      return;
+    }
+
     const bucketName = "blog-cover-images";
 
     let coverImageUrl = coverImage.trim() ? coverImage.trim() : null;
@@ -54,9 +62,10 @@ export default function BlogCreatePage() {
         .replace(/[^a-z0-9äöüß-]/gi, "-")
         .replace(/-+/g, "-")
         .replace(/^-|-$/g, "");
-      const filePath = `${sanitizedFileName || "cover-image"}-${uniqueSuffix}.${
+      const fileName = `${sanitizedFileName || "cover-image"}-${uniqueSuffix}.${
         fileExt || "png"
       }`;
+      const filePath = `${userId}/${fileName}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from(bucketName)
