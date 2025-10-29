@@ -7,7 +7,7 @@ export default function Header() {
         <header className={styles.mainHeader}>
             <div className={styles.headerContent}>
                 <Link className={styles.headerLogoLink} href="/">
-                    <Image src="/ds_capture_logo_white.webp" height={45} width={45} alt="DS_Capture Logo"></Image>
+                    <Image src="/logo_white.webp" height={34} width={43} alt="DS_Capture Logo"></Image>
                 </Link>
 
                 <nav className={styles.headerNavigation}>

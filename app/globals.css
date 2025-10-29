@@ -1,5 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+:root {
+  --bg: #F7F7F7;
+  --bg-light: #FFFFFF;
+  --bg-dark: #ECECEC;
+
+  --accent: #BCE3FA;
+
+  --primary: #202B48;
+  --primary-light: #2D3B4D;
+  --primary-dark: #171e33;
+
+  --secondary: #9A6140;
+  --secondary-light: #be7850;
+  --secondary-dark: #834C35;
+
+  --text-contrast: #FFFFFF;
+}
+
 * {
   margin: 0;
   padding: 0;
