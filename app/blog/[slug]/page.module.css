@@ -1,0 +1,78 @@
+.postPage {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 0 4rem;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+}
+
+.backLink:hover {
+    text-decoration: underline;
+}
+
+.postHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.postHeader h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.75rem);
+}
+
+.postHeader time {
+    font-size: .9rem;
+    color: #6b6b6b;
+}
+
+.excerpt {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #464646;
+}
+
+.coverImageWrapper {
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.coverImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.postBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #2b2b2b;
+}
+
+.postBody p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .postPage {
+        padding: 1.5rem 0 3rem;
+    }
+
+    .postHeader {
+        gap: .75rem;
+    }
+}
