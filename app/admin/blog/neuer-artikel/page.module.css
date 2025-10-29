@@ -1,0 +1,35 @@
+.blogContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.blogForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 40rem;
+}
+
+.blogForm label {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.blogForm input,
+.blogForm textarea,
+.blogForm select {
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #dedede;
+    font: inherit;
+}
+
+.abortButton {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
