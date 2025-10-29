@@ -21,6 +21,7 @@ export default function BlogCreatePage() {
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState("");
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [status, setStatus] = useState("draft");
   const [loading, setLoading] = useState(false);
 
@@ -38,6 +39,55 @@ export default function BlogCreatePage() {
     e.preventDefault();
     setLoading(true);
 
+    const bucketName = "blog-cover-images";
+
+    let coverImageUrl = coverImage.trim() ? coverImage.trim() : null;
+
+    if (coverImageFile) {
+      const fileExt = coverImageFile.name.split(".").pop();
+      const uniqueSuffix = `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 8)}`;
+      const baseFileName = slug || title || "cover-image";
+      const sanitizedFileName = baseFileName
+        .toLowerCase()
+        .replace(/[^a-z0-9äöüß-]/gi, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      const filePath = `${sanitizedFileName || "cover-image"}-${uniqueSuffix}.${
+        fileExt || "png"
+      }`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(bucketName)
+        .upload(filePath, coverImageFile, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        alert(
+          "Fehler beim Hochladen des Cover-Bildes: " + uploadError.message,
+        );
+        setLoading(false);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(uploadData?.path ?? filePath);
+
+      coverImageUrl = publicUrlData?.publicUrl ?? null;
+
+      if (coverImageUrl) {
+        setCoverImage(coverImageUrl);
+      } else {
+        alert("Fehler beim Ermitteln der öffentlichen Bild-URL.");
+        setLoading(false);
+        return;
+      }
+    }
+
     const { error } = await supabase.from("posts").insert([
       {
         author_id: userId,
@@ -45,7 +95,7 @@ export default function BlogCreatePage() {
         slug,
         excerpt,
         content,
-        cover_image: coverImage || null,
+        cover_image: coverImageUrl,
         status,
         published_at: status === "published" ? new Date().toISOString() : null,
       },
@@ -58,6 +108,8 @@ export default function BlogCreatePage() {
     }
 
     alert("Artikel erfolgreich erstellt!");
+    setLoading(false);
+    setCoverImageFile(null);
     router.push("/admin/blog");
   }
 
@@ -119,11 +171,27 @@ export default function BlogCreatePage() {
           </label>
 
           <label>
-            Cover Image URL
+            Cover Image hochladen
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setCoverImageFile(e.target.files?.[0] ? e.target.files[0] : null)
+              }
+            />
+          </label>
+
+          <label>
+            Cover Image URL (optional)
             <input
               type="url"
               value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
+              onChange={(e) => {
+                setCoverImage(e.target.value);
+                if (coverImageFile) {
+                  setCoverImageFile(null);
+                }
+              }}
               placeholder="https://..."
             />
           </label>
