@@ -1,0 +1,16 @@
+.blogContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.newBlogButton {
+    padding: 1rem 1.5rem;
+    background-color: #ededed;
+    border-radius: 12px;
+    text-decoration: none;
+    color: black;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
