@@ -8,10 +8,10 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
 
-import AdminSidebar from "../adminComponents/adminSidebar/AdminSidebar";
+import AdminSidebar from "../../adminComponents/adminSidebar/AdminSidebar";
 import layoutStyles from "../page.module.css";
 import styles from "../neuer-artikel/page.module.css";
-import "../adminComponents/adminPageHader.css";
+import "../../adminComponents/adminPageHader.css";
 
 type PostStatus = "draft" | "published" | "archived";
 

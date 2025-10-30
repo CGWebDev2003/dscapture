@@ -3,13 +3,13 @@
     height: 100vh;
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    gap: 2rem;
     background-color: white;
 }
 
 .adminContent {
     margin-top: 1rem;
-    width: calc(100% - 16rem);
+    width: calc(100% - 24rem);
     height: calc(100vh - 5rem);
     display: flex;
     flex-direction: column;
