@@ -1,20 +1,32 @@
 "use client";
 
-import styles from "./page.module.css";
-import { useState } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import Cookies from "js-cookie";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import Cookies from "js-cookie";
+
+import styles from "./page.module.css";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
+  const forgotPasswordHref = useMemo(() => {
+    if (!email) {
+      return "/login/passwort-vergessen";
+    }
+
+    return `/login/passwort-vergessen?email=${encodeURIComponent(email)}`;
+  }, [email]);
+
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -22,7 +34,7 @@ export default function LoginPage() {
     });
 
     if (error) {
-      alert("Login fehlgeschlagen: " + error.message);
+      setErrorMessage(`Login fehlgeschlagen: ${error.message}`);
       setLoading(false);
       return;
     }
@@ -34,7 +46,7 @@ export default function LoginPage() {
         .from("adminUsers")
         .select("role")
         .eq("user_id", data.user.id)
-        .maybeSingle(); // ✅ gibt kein Error, wenn kein Datensatz gefunden wird
+        .maybeSingle();
 
       if (clientError) {
         console.error("Fehler beim Laden der Client-Daten:", clientError.message);
@@ -48,19 +60,6 @@ export default function LoginPage() {
         Cookies.set("role", adminUser.role, { expires: 7 });
       }
 
-      // await logActivity(
-      //   "User Login",
-      //   { step: 0 },
-      //   {
-      //     userId: data.user.id,
-      //     action: "login",
-      //     entityType: "client",
-      //     entityId: data.user.id,
-      //     details: { success: true },
-      //     userAgent: navigator.userAgent,
-      //   }
-      // );
-
       router.push("/admin");
     }
 
@@ -69,34 +68,79 @@ export default function LoginPage() {
 
   return (
     <div className={styles.loginPage}>
-      <form className={styles.loginForm} onSubmit={handleLogin}>
-        <h1>Einloggen</h1>
-
-        <div className="inputBox">
-          <span className="inputIconBox">
-            <i className="bi bi-envelope inputIcon"></i>
-          </span>
-          <input
-            type="email"
-            placeholder="Email"
-            className="customInput"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+      <div className={styles.loginCard}>
+        <div className={styles.heading}>
+          <h1>Einloggen</h1>
+          <p>
+            Melde dich mit deinen Zugangsdaten an, um auf den geschützten Bereich
+            zuzugreifen.
+          </p>
         </div>
-          <input
-            type="password"
-            placeholder="Passwort"
-            className="customInput"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        <button type="submit" className="primaryButton" disabled={loading}>
-          {loading ? "Einloggen..." : <>Einloggen <i className="bi bi-arrow-right"></i></>}
-        </button>
-      </form>
+
+        {errorMessage && (
+          <p className={styles.errorMessage} role="alert" aria-live="assertive">
+            {errorMessage}
+          </p>
+        )}
+
+        <form className={styles.loginForm} onSubmit={handleLogin}>
+          <div className={styles.inputControl}>
+            <label className={styles.inputLabel} htmlFor="email">
+              E-Mail-Adresse
+            </label>
+            <div className={styles.inputFieldWrapper}>
+              <i className={`bi bi-envelope ${styles.inputIcon}`} aria-hidden="true" />
+              <input
+                id="email"
+                type="email"
+                placeholder="name@beispiel.de"
+                className={styles.inputField}
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className={styles.inputControl}>
+            <label className={styles.inputLabel} htmlFor="password">
+              Passwort
+            </label>
+            <div className={styles.inputFieldWrapper}>
+              <i className={`bi bi-shield-lock ${styles.inputIcon}`} aria-hidden="true" />
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                className={styles.inputField}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className={`${styles.submitButton} primaryButton`}
+            disabled={loading}
+          >
+            {loading ? "Einloggen..." : (
+              <>
+                Einloggen <i className="bi bi-arrow-right" aria-hidden="true" />
+              </>
+            )}
+          </button>
+        </form>
+
+        <div className={styles.formFooter}>
+          <Link href={forgotPasswordHref} className={styles.forgotPasswordLink}>
+            Passwort vergessen?
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

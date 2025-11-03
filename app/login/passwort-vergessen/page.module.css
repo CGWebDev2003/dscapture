@@ -1,16 +1,16 @@
-.loginPage {
+.page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2.5rem 1.5rem;
-  background: radial-gradient(circle at top left, rgba(188, 227, 250, 0.35), transparent 60%),
-    radial-gradient(circle at bottom right, rgba(32, 43, 72, 0.18), transparent 55%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 247, 247, 0.85));
+  background: radial-gradient(circle at top right, rgba(188, 227, 250, 0.3), transparent 60%),
+    radial-gradient(circle at bottom left, rgba(32, 43, 72, 0.18), transparent 55%),
+    linear-gradient(140deg, rgba(255, 255, 255, 0.95), rgba(247, 247, 247, 0.85));
 }
 
-.loginCard {
-  width: min(420px, 100%);
+.card {
+  width: min(440px, 100%);
   background: rgba(255, 255, 255, 0.85);
   border-radius: 28px;
   padding: 2.75rem 2.5rem;
@@ -30,7 +30,7 @@
 }
 
 .heading h1 {
-  font-size: clamp(1.8rem, 4vw, 2.2rem);
+  font-size: clamp(1.75rem, 4vw, 2.2rem);
   color: var(--primary);
 }
 
@@ -40,7 +40,7 @@
   font-size: 0.95rem;
 }
 
-.loginForm {
+.form {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
@@ -93,31 +93,47 @@
   color: rgba(32, 43, 72, 0.35);
 }
 
-.errorMessage {
-  background: rgba(227, 74, 74, 0.12);
-  border: 1px solid rgba(227, 74, 74, 0.35);
-  color: #a42525;
-  padding: 0.85rem 1rem;
+.success,
+.error {
+  padding: 0.9rem 1.1rem;
   border-radius: 18px;
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
-.formFooter {
+.success {
+  background: rgba(32, 163, 111, 0.12);
+  border: 1px solid rgba(32, 163, 111, 0.35);
+  color: #167353;
+}
+
+.error {
+  background: rgba(227, 74, 74, 0.12);
+  border: 1px solid rgba(227, 74, 74, 0.35);
+  color: #a42525;
+}
+
+.submitButton {
+  width: 100%;
+}
+
+.footer {
   display: flex;
   justify-content: center;
 }
 
-.forgotPasswordLink {
+.backLink {
   color: var(--primary);
   font-weight: 600;
   text-decoration: none;
-  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding-bottom: 0.15rem;
-  transition: color 0.2s ease;
+  position: relative;
 }
 
-.forgotPasswordLink::after {
+.backLink::after {
   content: "";
   position: absolute;
   left: 0;
@@ -131,23 +147,19 @@
   transition: transform 0.2s ease;
 }
 
-.forgotPasswordLink:hover::after,
-.forgotPasswordLink:focus-visible::after {
+.backLink:hover::after,
+.backLink:focus-visible::after {
   transform: scaleX(1);
 }
 
-.forgotPasswordLink:hover,
-.forgotPasswordLink:focus-visible {
+.backLink:hover,
+.backLink:focus-visible {
   color: var(--primary-dark);
   outline: none;
 }
 
-.submitButton {
-  width: 100%;
-}
-
 @media (max-width: 640px) {
-  .loginCard {
+  .card {
     padding: 2.25rem 1.75rem;
     border-radius: 22px;
   }
