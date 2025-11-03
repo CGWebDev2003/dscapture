@@ -33,6 +33,9 @@
     text-decoration: none;
     font-size: 1.1rem;
     font-weight: 500;
-    color: var(--text-contrast);
+    color: var(--primary);
+}
 
+.headerNavLinkHome {
+    color: var(--text-contrast);
 }
