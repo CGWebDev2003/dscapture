@@ -10,69 +10,63 @@ export default function ImpressumPage() {
     <section className="legalPage">
       <div className="legalSection">
         <h1>Impressum</h1>
-        <p>Angaben gemäß § 5 TMG</p>
+        <p>Verantwortlich für Inhalt und Gestaltung dieser Website:</p>
         <address>
-          Dawid Szymanski
+          DS-Capture
           <br />
-          DS_Capture
+          Inhaber Dawid Chmielewski
           <br />
-          Musterstraße 12
+          Riebeckstr. 18
           <br />
-          12345 Berlin
+          04317 Leipzig
         </address>
-      </div>
-
-      <div className="legalSection">
-        <h2>Kontakt</h2>
         <p>
-          Telefon: <a href="tel:+491701234567">+49 170 1234567</a>
+          Steuernummer: 231 211/10563
           <br />
-          E-Mail: <a href="mailto:info@dscapture.de">info@dscapture.de</a>
+          USt-Id.: DE 302112196
         </p>
-      </div>
-
-      <div className="legalSection">
-        <h2>Umsatzsteuer-ID</h2>
-        <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: DE999999999</p>
-      </div>
-
-      <div className="legalSection">
-        <h2>Berufshaftpflichtversicherung</h2>
         <p>
-          HDI Versicherung AG
+          <a href="mailto:fotografie@ds-capture.de">fotografie@ds-capture.de</a>
           <br />
-          HDI-Platz 1
-          <br />
-          30659 Hannover
+          <a href="tel:+491724374609">0172 4374609</a>
         </p>
-        <p>Geltungsraum der Versicherung: Deutschland</p>
-      </div>
-
-      <div className="legalSection">
-        <h2>Haftung für Inhalte</h2>
         <p>
-          Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen
-          Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet,
-          übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine
-          rechtswidrige Tätigkeit hinweisen.
+          Sie haben Fragen oder möchten gerne einen Fototermin mit mir vereinbaren? Kontaktieren Sie mich per Email oder
+          Telefon, ich melde mich umgehend bei Ihnen.
         </p>
       </div>
 
       <div className="legalSection">
-        <h2>Haftung für Links</h2>
+        <h2>Urheberrechtshinweis</h2>
+        <p>© Copyright 2022 – Dawid Chmielewski</p>
         <p>
-          Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb
-          können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist
-          stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
+          Die auf der Website verwendeten Texte, Bilder, Grafiken, Dateien usw. unterliegen auch ohne gesonderte
+          Kennzeichnung dem Urheberrecht. Vervielfältigung, Verbreitung, Veränderung und Verwendung (auch auszugsweise)
+          nur mit ausdrücklicher Genehmigung in Schriftform des Urhebers.
         </p>
       </div>
 
       <div className="legalSection">
-        <h2>Urheberrecht</h2>
+        <h2>Copyright</h2>
         <p>
-          Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen
-          Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen
-          des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+          Bitte beachten Sie, dass die Inhalte dieser Website urheberrechtlich geschützt sind. Eine Vervielfältigung,
+          Verbreitung, Veränderung sowie Speicherung der darin enthaltenen Daten oder Informationen, insbesondere die
+          Verwendung von Fotos, Bildmaterial, Texten oder Textteilen, bedarf der vorherigen Zustimmung und schriftlichen
+          Genehmigung von Dawid Chmielewski.
+        </p>
+      </div>
+
+      <div className="legalSection">
+        <h2>Haftungsausschluss</h2>
+        <p>
+          Die Informationen auf diesen Webseiten werden regelmäßig geprüft und aktualisiert. Trotz aller Sorgfalt können
+          sich die Daten zwischenzeitlich verändert haben. Eine Haftung oder Garantie für die Aktualität, Richtigkeit oder
+          Vollständigkeit der Informationen kann daher nicht übernommen werden.
+        </p>
+        <p>
+          Trotz regelmäßiger und sorgfältiger Prüfung von externen Links übernehme ich keine Haftung für die Inhalte
+          externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich. Alle
+          Angaben auf diesen Seiten sind ohne Gewähr.
         </p>
       </div>
     </section>
