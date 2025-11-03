@@ -206,6 +206,11 @@ export default function AdminHomepagePage() {
 
         <section className="admin-card">
           <h2>Hero Overlay</h2>
+          <p>
+            Bitte achte darauf, dass du dich selbst um die Form des Bildes kümmerst.
+            Das Overlay sollte möglichst quadratisch sein und idealerweise eine
+            Größe von 425&nbsp;px Breite und 550&nbsp;px Höhe besitzen.
+          </p>
           {overlayImage?.public_url ? (
             <div className="admin-image-preview">
               <Image
