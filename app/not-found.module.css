@@ -31,10 +31,13 @@
 .actions {
   display: flex;
   flex-direction: column;
+  justify-conent: center;
+  align-items: center;
   gap: 0.85rem;
 }
 
 .primaryLink {
+  max-width: 300px;
   text-align: center;
   display: inline-flex;
   align-items: center;

@@ -17,7 +17,7 @@ export default function NotFound() {
 
         <div className={notFoundStyles.content}>
           <div className={notFoundStyles.message}>
-            <span className={notFoundStyles.statusBadge}>404</span>
+            <span className={notFoundStyles.statusBadge}>STATUS 404</span>
             <p>
               Prüfe die eingegebene Adresse oder nutze die folgenden Aktionen,
               um weiterzumachen.
