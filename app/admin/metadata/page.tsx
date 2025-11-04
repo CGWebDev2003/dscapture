@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useState } fro
 import AdminSidebar from "../adminComponents/adminSidebar/AdminSidebar";
 import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 import type { PageMetadataRow } from "@/lib/pageMetadata";
 import styles from "./metadata.module.css";
 
@@ -138,6 +139,8 @@ export default function AdminMetadataPage() {
       keywords: formState.keywords.trim() || null,
     } satisfies Omit<PageMetadataRow, "slug"> & { slug: string };
 
+    const { data: authData } = await supabase.auth.getUser();
+
     const { data, error: upsertError } = await supabase
       .from("page_metadata")
       .upsert(payload, { onConflict: "slug" })
@@ -151,6 +154,15 @@ export default function AdminMetadataPage() {
     if (upsertError) {
       console.error("Fehler beim Speichern der Metadaten:", upsertError.message);
       setError("Die Metadaten konnten nicht gespeichert werden.");
+      await logUserAction({
+        action: "page_metadata_save_failed",
+        context: "admin",
+        userId: authData?.user?.id,
+        userEmail: authData?.user?.email ?? null,
+        entityType: "page_metadata",
+        entityId: trimmedSlug,
+        metadata: { error: upsertError.message },
+      });
       return;
     }
 
@@ -163,6 +175,14 @@ export default function AdminMetadataPage() {
       setFormState(mapRowToFormState(data));
       setActiveSlug(data.slug);
       setFeedback("Metadaten wurden gespeichert.");
+      await logUserAction({
+        action: "page_metadata_saved",
+        context: "admin",
+        userId: authData?.user?.id,
+        userEmail: authData?.user?.email ?? null,
+        entityType: "page_metadata",
+        entityId: data.slug,
+      });
     }
   };
 
@@ -185,19 +205,41 @@ export default function AdminMetadataPage() {
     setFeedback(null);
     setError(null);
 
-    const { error: deleteError } = await supabase.from("page_metadata").delete().eq("slug", slugToDelete);
+    const { data: authData } = await supabase.auth.getUser();
+
+    const { error: deleteError } = await supabase
+      .from("page_metadata")
+      .delete()
+      .eq("slug", slugToDelete);
 
     setDeleting(false);
 
     if (deleteError) {
       console.error("Fehler beim Löschen der Metadaten:", deleteError.message);
       setError("Der Metadaten-Eintrag konnte nicht gelöscht werden.");
+      await logUserAction({
+        action: "page_metadata_delete_failed",
+        context: "admin",
+        userId: authData?.user?.id,
+        userEmail: authData?.user?.email ?? null,
+        entityType: "page_metadata",
+        entityId: slugToDelete,
+        metadata: { error: deleteError.message },
+      });
       return;
     }
 
     setEntries((previous) => previous.filter((entry) => entry.slug !== slugToDelete));
     resetForm();
     setFeedback("Metadaten-Eintrag wurde gelöscht.");
+    await logUserAction({
+      action: "page_metadata_deleted",
+      context: "admin",
+      userId: authData?.user?.id,
+      userEmail: authData?.user?.email ?? null,
+      entityType: "page_metadata",
+      entityId: slugToDelete,
+    });
   };
 
   const isExistingEntry = useMemo(

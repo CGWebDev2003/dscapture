@@ -7,6 +7,7 @@ import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
 import blogStyles from "./page.module.css";
 import "../adminComponents/adminPageHader.css";
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 import type { BlogCategory } from "@/lib/blogCategories";
 
 type BlogPostStatus = "draft" | "published" | "archived";
@@ -169,6 +170,8 @@ export default function BlogManager() {
     setUpdatingSpotlightId(post.id);
 
     try {
+      const { data: authData } = await supabase.auth.getUser();
+
       if (post.spotlight) {
         const { error } = await supabase
           .from("posts")
@@ -182,6 +185,15 @@ export default function BlogManager() {
         setPublishedPosts((prev) =>
           prev.map((p) => (p.id === post.id ? { ...p, spotlight: false } : p)),
         );
+        await logUserAction({
+          action: "blog_spotlight_disabled",
+          context: "admin",
+          userId: authData?.user?.id,
+          userEmail: authData?.user?.email ?? null,
+          entityType: "blog_post",
+          entityId: post.id,
+          metadata: { slug: post.slug },
+        });
       } else {
         const { error: clearError } = await supabase
           .from("posts")
@@ -204,12 +216,32 @@ export default function BlogManager() {
         setPublishedPosts((prev) =>
           prev.map((p) => ({ ...p, spotlight: p.id === post.id })),
         );
+        await logUserAction({
+          action: "blog_spotlight_enabled",
+          context: "admin",
+          userId: authData?.user?.id,
+          userEmail: authData?.user?.email ?? null,
+          entityType: "blog_post",
+          entityId: post.id,
+          metadata: { slug: post.slug },
+        });
       }
     } catch (error) {
       console.error("Fehler beim Aktualisieren des Spotlight-Status:", error);
       alert(
         "Der Spotlight-Status konnte nicht aktualisiert werden. Bitte später erneut versuchen.",
       );
+      const message = error instanceof Error ? error.message : String(error);
+      const { data: authData } = await supabase.auth.getUser();
+      await logUserAction({
+        action: "blog_spotlight_update_failed",
+        context: "admin",
+        userId: authData?.user?.id,
+        userEmail: authData?.user?.email ?? null,
+        entityType: "blog_post",
+        entityId: post.id,
+        metadata: { slug: post.slug, error: message },
+      });
     } finally {
       setUpdatingSpotlightId(null);
     }

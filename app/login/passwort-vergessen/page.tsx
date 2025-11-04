@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import styles from "./page.module.css";
 import { supabase } from "../../../lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 
 export default function ForgotPasswordPage() {
   const searchParams = useSearchParams();
@@ -31,10 +32,21 @@ export default function ForgotPasswordPage() {
 
     if (error) {
       setErrorMessage(error.message);
+      await logUserAction({
+        action: "password_reset_failed",
+        context: "public",
+        userEmail: email,
+        metadata: { error: error.message },
+      });
     } else {
       setSuccessMessage(
         "Wenn die angegebene E-Mail-Adresse registriert ist, senden wir dir einen Link zum Zurücksetzen deines Passworts."
       );
+      await logUserAction({
+        action: "password_reset_requested",
+        context: "public",
+        userEmail: email,
+      });
     }
 
     setLoading(false);

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
@@ -84,10 +85,20 @@ export default function BlogCreatePage() {
     e.preventDefault();
     setLoading(true);
 
+    const { data: authData } = await supabase.auth.getUser();
+    const activeUser = authData?.user ?? null;
+
     if (!userId) {
       alert(
         "Fehler beim Hochladen des Cover-Bildes: Benutzerinformation nicht gefunden. Bitte erneut anmelden.",
       );
+      await logUserAction({
+        action: "blog_post_create_missing_user",
+        context: "admin",
+        userId: activeUser?.id ?? null,
+        userEmail: activeUser?.email ?? null,
+        metadata: { slug, title },
+      });
       setLoading(false);
       return;
     }
@@ -123,6 +134,15 @@ export default function BlogCreatePage() {
         alert(
           "Fehler beim Hochladen des Cover-Bildes: " + uploadError.message,
         );
+        await logUserAction({
+          action: "blog_post_cover_upload_failed",
+          context: "admin",
+          userId: activeUser?.id ?? userId,
+          userEmail: activeUser?.email ?? null,
+          entityType: "blog_post",
+          entityId: slug || title,
+          metadata: { error: uploadError.message },
+        });
         setLoading(false);
         return;
       }
@@ -137,6 +157,14 @@ export default function BlogCreatePage() {
         setCoverImage(coverImageUrl);
       } else {
         alert("Fehler beim Ermitteln der öffentlichen Bild-URL.");
+        await logUserAction({
+          action: "blog_post_cover_url_failed",
+          context: "admin",
+          userId: activeUser?.id ?? userId,
+          userEmail: activeUser?.email ?? null,
+          entityType: "blog_post",
+          entityId: slug || title,
+        });
         setLoading(false);
         return;
       }
@@ -159,9 +187,32 @@ export default function BlogCreatePage() {
 
     if (error) {
       alert("Fehler beim Erstellen des Artikels: " + error.message);
+      await logUserAction({
+        action: "blog_post_create_failed",
+        context: "admin",
+        userId: activeUser?.id ?? userId,
+        userEmail: activeUser?.email ?? null,
+        entityType: "blog_post",
+        entityId: slug,
+        metadata: { error: error.message },
+      });
       setLoading(false);
       return;
     }
+
+    await logUserAction({
+      action: "blog_post_created",
+      context: "admin",
+      userId: activeUser?.id ?? userId,
+      userEmail: activeUser?.email ?? null,
+      entityType: "blog_post",
+      entityId: slug,
+      metadata: {
+        status,
+        hasCoverImage: Boolean(coverImageUrl),
+        categoryId: selectedCategoryId || null,
+      },
+    });
 
     alert("Artikel erfolgreich erstellt!");
     setLoading(false);
