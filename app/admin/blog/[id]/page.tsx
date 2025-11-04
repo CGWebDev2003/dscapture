@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
 import { createSlug } from "@/lib/slug";
 import type { BlogCategory } from "@/lib/blogCategories";
@@ -172,10 +173,22 @@ export default function BlogEditPage() {
 
     setSaving(true);
 
+    const { data: authData } = await supabase.auth.getUser();
+    const activeUser = authData?.user ?? null;
+
     if (!userId) {
       alert(
         "Fehler beim Hochladen des Cover-Bildes: Benutzerinformation nicht gefunden. Bitte erneut anmelden.",
       );
+      await logUserAction({
+        action: "blog_post_update_missing_user",
+        context: "admin",
+        userId: activeUser?.id ?? null,
+        userEmail: activeUser?.email ?? null,
+        entityType: "blog_post",
+        entityId: postId,
+        metadata: { slug },
+      });
       setSaving(false);
       return;
     }
@@ -207,6 +220,15 @@ export default function BlogEditPage() {
 
       if (uploadError) {
         alert("Fehler beim Hochladen des Cover-Bildes: " + uploadError.message);
+        await logUserAction({
+          action: "blog_post_cover_upload_failed",
+          context: "admin",
+          userId: activeUser?.id ?? userId,
+          userEmail: activeUser?.email ?? null,
+          entityType: "blog_post",
+          entityId: postId,
+          metadata: { slug, error: uploadError.message },
+        });
         setSaving(false);
         return;
       }
@@ -219,6 +241,15 @@ export default function BlogEditPage() {
 
       if (!coverImageUrl) {
         alert("Fehler beim Ermitteln der öffentlichen Bild-URL.");
+        await logUserAction({
+          action: "blog_post_cover_url_failed",
+          context: "admin",
+          userId: activeUser?.id ?? userId,
+          userEmail: activeUser?.email ?? null,
+          entityType: "blog_post",
+          entityId: postId,
+          metadata: { slug },
+        });
         setSaving(false);
         return;
       }
@@ -257,9 +288,33 @@ export default function BlogEditPage() {
 
     if (error) {
       alert("Fehler beim Speichern des Artikels: " + error.message);
+      await logUserAction({
+        action: "blog_post_update_failed",
+        context: "admin",
+        userId: activeUser?.id ?? userId,
+        userEmail: activeUser?.email ?? null,
+        entityType: "blog_post",
+        entityId: postId,
+        metadata: { slug, error: error.message },
+      });
       setSaving(false);
       return;
     }
+
+    await logUserAction({
+      action: "blog_post_updated",
+      context: "admin",
+      userId: activeUser?.id ?? userId,
+      userEmail: activeUser?.email ?? null,
+      entityType: "blog_post",
+      entityId: postId,
+      metadata: {
+        slug,
+        status,
+        hasCoverImage: Boolean(coverImageUrl),
+        categoryId: selectedCategoryId || null,
+      },
+    });
 
     alert("Artikel erfolgreich aktualisiert!");
     setPublishedAt(updates.published_at ?? null);
@@ -281,13 +336,35 @@ export default function BlogEditPage() {
 
     setDeleting(true);
 
+    const { data: authData } = await supabase.auth.getUser();
+    const activeUser = authData?.user ?? null;
+
     const { error } = await supabase.from("posts").delete().eq("id", postId);
 
     if (error) {
       alert("Fehler beim Löschen des Artikels: " + error.message);
+      await logUserAction({
+        action: "blog_post_delete_failed",
+        context: "admin",
+        userId: activeUser?.id ?? userId,
+        userEmail: activeUser?.email ?? null,
+        entityType: "blog_post",
+        entityId: postId,
+        metadata: { slug, error: error.message },
+      });
       setDeleting(false);
       return;
     }
+
+    await logUserAction({
+      action: "blog_post_deleted",
+      context: "admin",
+      userId: activeUser?.id ?? userId,
+      userEmail: activeUser?.email ?? null,
+      entityType: "blog_post",
+      entityId: postId,
+      metadata: { slug },
+    });
 
     alert("Artikel erfolgreich gelöscht.");
     setDeleting(false);

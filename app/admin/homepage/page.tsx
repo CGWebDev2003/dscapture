@@ -5,6 +5,7 @@ import Image from "next/image";
 import AdminSidebar from "../adminComponents/adminSidebar/AdminSidebar";
 import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 
 type HomepageImageType = "background" | "overlay";
 
@@ -68,6 +69,8 @@ export default function AdminHomepagePage() {
       type === "background" ? setUploadingBackground : setUploadingOverlay;
     setUploading(true);
 
+    let currentUser: { id: string; email?: string | null } | null = null;
+
     try {
       const {
         data: { user },
@@ -79,6 +82,8 @@ export default function AdminHomepagePage() {
           userError?.message ?? "Es konnte kein angemeldeter Nutzer ermittelt werden.",
         );
       }
+
+      currentUser = { id: user.id, email: user.email };
 
       const fileExt = file.name.split(".").pop();
       const sanitizedType = type === "background" ? "background" : "overlay";
@@ -134,6 +139,19 @@ export default function AdminHomepagePage() {
 
       event.currentTarget.reset();
 
+      await logUserAction({
+        action: "homepage_image_uploaded",
+        context: "admin",
+        userId: currentUser?.id,
+        userEmail: currentUser?.email ?? null,
+        entityType: "homepage_image",
+        entityId: type,
+        metadata: {
+          filePath: uploadData?.path ?? filePath,
+          publicUrl,
+        },
+      });
+
       alert("Bild erfolgreich hochgeladen!");
     } catch (error) {
       const message =
@@ -142,6 +160,17 @@ export default function AdminHomepagePage() {
           : "Unbekannter Fehler beim Hochladen.";
       console.error(message);
       alert(`Fehler beim Hochladen: ${message}`);
+      await logUserAction({
+        action: "homepage_image_upload_failed",
+        context: "admin",
+        userId: currentUser?.id,
+        userEmail: currentUser?.email ?? null,
+        entityType: "homepage_image",
+        entityId: type,
+        metadata: {
+          error: message,
+        },
+      });
     } finally {
       setUploading(false);
     }

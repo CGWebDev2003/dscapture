@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 import styles from "@/app/kontakt/contact.module.css";
 
 const ContactPageClient = () => {
@@ -39,8 +40,30 @@ const ContactPageClient = () => {
 
     if (insertError) {
       setError("Etwas ist schiefgelaufen. Bitte versuche es erneut.");
+      await logUserAction({
+        action: "contact_message_failed",
+        context: "public",
+        userEmail: email.trim(),
+        description: "Kontaktformular konnte nicht gespeichert werden.",
+        metadata: {
+          error: insertError.message,
+          hasSubject: Boolean(subject.trim()),
+          hasPhone: Boolean(phone.trim()),
+        },
+      });
       return;
     }
+
+    await logUserAction({
+      action: "contact_message_submitted",
+      context: "public",
+      userEmail: email.trim(),
+      description: "Kontaktformular wurde erfolgreich abgesendet.",
+      metadata: {
+        hasSubject: Boolean(subject.trim()),
+        hasPhone: Boolean(phone.trim()),
+      },
+    });
 
     setFeedback("Danke für deine Nachricht! Wir melden uns zeitnah bei dir.");
     setName("");

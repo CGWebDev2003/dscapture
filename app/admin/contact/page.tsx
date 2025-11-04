@@ -6,6 +6,7 @@ import { useVerifyAdminAccess } from "@/lib/verifyAdminAccess";
 import styles from "./page.module.css";
 import "../adminComponents/adminPageHader.css";
 import { supabase } from "@/lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 
 type ContactMessageStatus = "open" | "in_progress" | "done";
 
@@ -154,6 +155,8 @@ export default function AdminContactPage() {
         ),
       );
 
+      const { data: authData } = await supabase.auth.getUser();
+
       const { error } = await supabase
         .from("contact_messages")
         .update({ status: nextStatus })
@@ -176,6 +179,32 @@ export default function AdminContactPage() {
               : entry,
           ),
         );
+        await logUserAction({
+          action: "contact_message_status_update_failed",
+          context: "admin",
+          userId: authData?.user?.id,
+          userEmail: authData?.user?.email ?? null,
+          entityType: "contact_message",
+          entityId: id,
+          metadata: {
+            fromStatus: previousStatus,
+            attemptedStatus: nextStatus,
+            error: error.message,
+          },
+        });
+      } else {
+        await logUserAction({
+          action: "contact_message_status_updated",
+          context: "admin",
+          userId: authData?.user?.id,
+          userEmail: authData?.user?.email ?? null,
+          entityType: "contact_message",
+          entityId: id,
+          metadata: {
+            fromStatus: previousStatus,
+            toStatus: nextStatus,
+          },
+        });
       }
 
       setUpdatingMessageId(null);

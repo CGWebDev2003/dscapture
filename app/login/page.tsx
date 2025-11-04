@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 
 import styles from "./page.module.css";
 import { supabase } from "../../lib/supabaseClient";
+import { logUserAction } from "@/lib/logger";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -35,6 +36,13 @@ export default function LoginPage() {
 
     if (error) {
       setErrorMessage(`Login fehlgeschlagen: ${error.message}`);
+      await logUserAction({
+        action: "login_failed",
+        context: "public",
+        userEmail: email,
+        description: "Fehlgeschlagener Login-Versuch.",
+        metadata: { reason: error.message },
+      });
       setLoading(false);
       return;
     }
@@ -50,15 +58,36 @@ export default function LoginPage() {
 
       if (clientError) {
         console.error("Fehler beim Laden der Client-Daten:", clientError.message);
+        await logUserAction({
+          action: "load_admin_role_failed",
+          context: "admin",
+          userId: data.user.id,
+          userEmail: data.user.email ?? email,
+          metadata: { error: clientError.message },
+        });
       }
 
       if (!adminUser) {
         console.warn("Kein Admin-Eintrag für diesen Benutzer gefunden.");
+        await logUserAction({
+          action: "admin_role_missing",
+          context: "admin",
+          userId: data.user.id,
+          userEmail: data.user.email ?? email,
+        });
       }
 
       if (adminUser?.role) {
         Cookies.set("role", adminUser.role, { expires: 7 });
       }
+
+      await logUserAction({
+        action: "login_success",
+        context: adminUser ? "admin" : "public",
+        userId: data.user.id,
+        userEmail: data.user.email ?? email,
+        metadata: { role: adminUser?.role ?? null },
+      });
 
       router.push("/admin");
     }
