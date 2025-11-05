@@ -176,6 +176,59 @@ const HomePageClient = () => {
     };
   }, [activeServiceIndex, scrollToService]);
 
+  const prevButtonRef = useRef<HTMLButtonElement | null>(null);
+  const nextButtonRef = useRef<HTMLButtonElement | null>(null);
+  const swiperInstanceRef = useRef<SwiperInstance | null>(null);
+
+  const updateSwiperNavigation = useCallback(() => {
+    const swiper = swiperInstanceRef.current;
+    const prevEl = prevButtonRef.current;
+    const nextEl = nextButtonRef.current;
+
+    if (!swiper || !prevEl || !nextEl) {
+      return;
+    }
+
+    if (typeof swiper.params.navigation === "boolean" || !swiper.params.navigation) {
+      swiper.params.navigation = {
+        enabled: true,
+        prevEl,
+        nextEl,
+      };
+    } else {
+      swiper.params.navigation.prevEl = prevEl;
+      swiper.params.navigation.nextEl = nextEl;
+    }
+
+    swiper.navigation.destroy();
+    swiper.navigation.init();
+    swiper.navigation.update();
+  }, []);
+
+  const handleSwiperInit = useCallback(
+    (swiper: SwiperInstance) => {
+      swiperInstanceRef.current = swiper;
+      updateSwiperNavigation();
+    },
+    [updateSwiperNavigation]
+  );
+
+  const setPrevButtonRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      prevButtonRef.current = node;
+      updateSwiperNavigation();
+    },
+    [updateSwiperNavigation]
+  );
+
+  const setNextButtonRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      nextButtonRef.current = node;
+      updateSwiperNavigation();
+    },
+    [updateSwiperNavigation]
+  );
+
   return (
     <>
       <section className={styles.heroSection}>

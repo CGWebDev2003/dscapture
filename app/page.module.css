@@ -167,6 +167,10 @@
   box-sizing: border-box;
 }
 
+.servicesSwiper :global(.swiper-slide) {
+  width: 100%;
+}
+
 .serviceCard {
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.5);
