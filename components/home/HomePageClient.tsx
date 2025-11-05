@@ -86,7 +86,7 @@ const HomePageClient = () => {
               <button className={styles.ctaButton}>Mehr erfahren</button>
             </div>
 
-            <Image src={overlaySrc} alt="Overlay" width={425} height={550} className={styles.overlay} />
+            <Image src={overlaySrc} alt="Overlay" width={350} height={450} className={styles.overlay} />
           </div>
         </div>
       </section>
