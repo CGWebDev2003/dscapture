@@ -93,17 +93,10 @@ const HomePageClient = () => {
 
       <section className={styles.servicesSection}>
         <div className={styles.servicesContent}>
-          <div className={styles.servicesHeader}>
-            <h2>Unsere Leistungen</h2>
-            <p className={styles.servicesIntro}>
-              Ein kuratierter Auszug aus unserem Leistungsportfolio – jede Slide verbindet Strategie,
-              Gestaltung und Technologie zu einem konsistenten Markenerlebnis.
-            </p>
-          </div>
+          <h2>Unsere Leistungen</h2>
           <Swiper
             modules={[Pagination]}
             pagination={{ clickable: true }}
-            navigation
             spaceBetween={24}
             slidesPerView={1}
             breakpoints={{
