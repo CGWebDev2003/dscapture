@@ -66,21 +66,39 @@ export function applyPageMetadata(
     mergedMetadata.alternates = defaults.alternates;
   }
 
-  const baseOpenGraph = defaults.openGraph ?? {};
-  const mergedOpenGraph = {
+  const baseOpenGraph = (defaults.openGraph ?? {}) as NonNullable<
+    Metadata["openGraph"]
+  >;
+  const mergedOpenGraph: NonNullable<Metadata["openGraph"]> = {
     ...baseOpenGraph,
-    title:
-      record.open_graph_title?.trim() ||
-      record.title?.trim() ||
-      baseOpenGraph.title ||
-      (typeof mergedMetadata.title === "string" ? mergedMetadata.title : undefined),
-    description:
-      record.open_graph_description?.trim() ||
-      record.description?.trim() ||
-      baseOpenGraph.description ||
-      mergedMetadata.description,
     url: canonicalUrl || baseOpenGraph.url,
-  } as Metadata["openGraph"];
+  };
+
+  const fallbackOpenGraphTitle =
+    typeof mergedMetadata.title === "string" ? mergedMetadata.title : undefined;
+  const resolvedOpenGraphTitle =
+    record.open_graph_title?.trim() ||
+    record.title?.trim() ||
+    baseOpenGraph.title ||
+    fallbackOpenGraphTitle;
+
+  if (typeof resolvedOpenGraphTitle === "string") {
+    mergedOpenGraph.title = resolvedOpenGraphTitle;
+  }
+
+  const fallbackOpenGraphDescription =
+    typeof mergedMetadata.description === "string"
+      ? mergedMetadata.description
+      : undefined;
+  const resolvedOpenGraphDescription =
+    record.open_graph_description?.trim() ||
+    record.description?.trim() ||
+    baseOpenGraph.description ||
+    fallbackOpenGraphDescription;
+
+  if (typeof resolvedOpenGraphDescription === "string") {
+    mergedOpenGraph.description = resolvedOpenGraphDescription;
+  }
 
   if (record.open_graph_image_url?.trim()) {
     mergedOpenGraph.images = [{ url: record.open_graph_image_url.trim() }];
