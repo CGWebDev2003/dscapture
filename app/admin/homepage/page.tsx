@@ -27,6 +27,8 @@ export default function AdminHomepagePage() {
   const [overlayFile, setOverlayFile] = useState<File | null>(null);
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const [uploadingOverlay, setUploadingOverlay] = useState(false);
+  const [deletingBackground, setDeletingBackground] = useState(false);
+  const [deletingOverlay, setDeletingOverlay] = useState(false);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -176,6 +178,101 @@ export default function AdminHomepagePage() {
     }
   };
 
+  const handleDelete = async (type: HomepageImageType) => {
+    const image = type === "background" ? backgroundImage : overlayImage;
+
+    if (!image?.file_path) {
+      alert("Es wurde kein Bild zum Löschen gefunden.");
+      return;
+    }
+
+    const setDeleting =
+      type === "background" ? setDeletingBackground : setDeletingOverlay;
+    setDeleting(true);
+
+    let currentUser: { id: string; email?: string | null } | null = null;
+
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error(
+          userError?.message ?? "Es konnte kein angemeldeter Nutzer ermittelt werden.",
+        );
+      }
+
+      currentUser = { id: user.id, email: user.email };
+
+      const { error: removeError } = await supabase.storage
+        .from(bucketName)
+        .remove([image.file_path]);
+
+      if (
+        removeError &&
+        !(removeError.message?.toLowerCase().includes("not found"))
+      ) {
+        throw new Error(
+          removeError.message ?? "Fehler beim Entfernen aus dem Storage.",
+        );
+      }
+
+      const { error: deleteError } = await supabase
+        .from("homepage_images")
+        .delete()
+        .eq("image_type", type);
+
+      if (deleteError) {
+        throw new Error(deleteError.message);
+      }
+
+      if (type === "background") {
+        setBackgroundImage(null);
+        setBackgroundFile(null);
+      } else {
+        setOverlayImage(null);
+        setOverlayFile(null);
+      }
+
+      await logUserAction({
+        action: "homepage_image_deleted",
+        context: "admin",
+        userId: currentUser?.id,
+        userEmail: currentUser?.email ?? null,
+        entityType: "homepage_image",
+        entityId: type,
+        metadata: {
+          filePath: image.file_path,
+        },
+      });
+
+      alert("Bild erfolgreich gelöscht!");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unbekannter Fehler beim Löschen.";
+      console.error(message);
+      alert(`Fehler beim Löschen: ${message}`);
+      await logUserAction({
+        action: "homepage_image_delete_failed",
+        context: "admin",
+        userId: currentUser?.id,
+        userEmail: currentUser?.email ?? null,
+        entityType: "homepage_image",
+        entityId: type,
+        metadata: {
+          error: message,
+          filePath: image.file_path,
+        },
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (verifying) {
     return (
       <div className="admin-page">
@@ -204,6 +301,14 @@ export default function AdminHomepagePage() {
                 style={{ objectFit: "cover" }}
               />
               <p className="admin-image-path">{backgroundImage.file_path}</p>
+              <button
+                type="button"
+                className="adminButton"
+                onClick={() => handleDelete("background")}
+                disabled={deletingBackground}
+              >
+                {deletingBackground ? "Lösche..." : "Bild löschen"}
+              </button>
             </div>
           ) : (
             <p>Es ist noch kein Hintergrundbild hochgeladen.</p>
@@ -250,6 +355,14 @@ export default function AdminHomepagePage() {
                 style={{ objectFit: "contain" }}
               />
               <p className="admin-image-path">{overlayImage.file_path}</p>
+              <button
+                type="button"
+                className="adminButton"
+                onClick={() => handleDelete("overlay")}
+                disabled={deletingOverlay}
+              >
+                {deletingOverlay ? "Lösche..." : "Bild löschen"}
+              </button>
             </div>
           ) : (
             <p>Es ist noch kein Overlay-Bild hochgeladen.</p>
