@@ -2,7 +2,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: calc(100% - 1.5rem);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,8 +94,7 @@
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  border-radius: 999px;
-  border: 1px solid currentColor;
+  border: none;
   background: transparent;
   color: inherit;
   cursor: pointer;
