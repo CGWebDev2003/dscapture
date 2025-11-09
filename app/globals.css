@@ -239,6 +239,10 @@ body {
 
 @media (max-width: 900px) {
   .admin-page {
+    position: relative;
+    width: 100%;
+    right: auto;
+    left: auto;
     padding-top: 5rem;
     flex-direction: column;
   }
@@ -246,7 +250,7 @@ body {
   .admin-content {
     margin-left: 0;
     width: 100%;
-    min-height: calc(100vh - 5rem);
+    min-height: 100vh;
     border-radius: 32px;
     padding: 2rem;
   }
