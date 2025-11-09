@@ -1,0 +1,267 @@
+.portfolioContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header p {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.heroForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldGroup label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.fieldGroup input,
+.fieldGroup textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 13, 28, 0.45);
+  color: var(--primary);
+  font: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.fieldGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.fieldGroup input:focus,
+.fieldGroup textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(8, 13, 28, 0.6);
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.backgroundSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.backgroundPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 640px;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 45px rgba(8, 15, 30, 0.4);
+}
+
+.filePath {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  word-break: break-all;
+}
+
+.projectManager {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.newProject {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.projectForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.checkboxRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.checkboxRow input {
+  width: 18px;
+  height: 18px;
+}
+
+.projectList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.projectItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.projectCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  border-radius: 24px;
+  background: rgba(6, 10, 24, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(5, 11, 26, 0.35);
+}
+
+.projectHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.projectHeader h4 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.projectMeta {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.projectActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.coverSection,
+.gallerySection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.coverPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.coverImage {
+  width: 160px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 32px rgba(6, 11, 25, 0.35);
+}
+
+.coverPlaceholder {
+  width: 160px;
+  height: 220px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  text-align: center;
+  padding: 1rem;
+}
+
+.galleryList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+}
+
+.galleryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.galleryItem input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 13, 28, 0.45);
+  color: inherit;
+  font: inherit;
+}
+
+.errorText {
+  color: #ffb5b5;
+}
+
+.emptyState {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 960px) {
+  .projectHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .coverPreview {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 720px) {
+  .heroForm,
+  .projectForm {
+    grid-template-columns: 1fr;
+  }
+}
