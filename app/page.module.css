@@ -243,11 +243,11 @@
   }
 
   .heroContent {
-    flex-direction: column;
+    flex-direction: column-reverse;
     text-align: center;
     min-height: auto;
     padding: 8rem 2.5rem 6rem;
-    gap: 2.5rem;
+    gap: 5rem !important;
   }
 
   .textContainer {
@@ -267,6 +267,7 @@
 @media (max-width: 768px) {
   .heroContent {
     padding: 7rem 2rem 5rem;
+    flex-direction: column-reverse;
   }
 
   .servicesSection {
@@ -291,7 +292,8 @@
 @media (max-width: 600px) {
   .heroContent {
     padding: 6.5rem 1.5rem 4.5rem;
-    flex-direction: column;
+    flex-direction: column-reverse;
+    gap: 5rem !important;
   }
 
   .servicesContent {
