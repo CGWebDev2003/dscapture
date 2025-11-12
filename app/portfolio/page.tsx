@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Metadata } from "next";
 import styles from "./page.module.css";
 import { applyPageMetadata, fetchPageMetadata } from "@/lib/pageMetadata";
@@ -141,15 +142,15 @@ export default async function PortfolioPage() {
           ) : (
             <div className={styles.projectsGrid}>
               {projects.map((project) => {
-                return (
-                  <article key={project.id} className={styles.projectCard}>
+                const cardContent = (
+                  <article className={styles.projectCard}>
                     <div className={styles.projectCoverWrapper}>
                       {project.cover_public_url ? (
                         <Image
                           src={project.cover_public_url}
                           alt={project.title}
                           fill
-                          sizes="(max-width: 768px) 50vw, 280px"
+                          sizes="(max-width: 768px) 80vw, 360px"
                           className={styles.projectCover}
                         />
                       ) : (
@@ -167,12 +168,7 @@ export default async function PortfolioPage() {
                         </div>
 
                         {project.slug ? (
-                          <a
-                            href={`/portfolio/${project.slug}`}
-                            className={styles.projectLink}
-                          >
-                            Ansehen
-                          </a>
+                          <span className={styles.projectLink}>Ansehen</span>
                         ) : null}
                       </div>
                     </div>
@@ -181,6 +177,24 @@ export default async function PortfolioPage() {
                       <span className={styles.featuredBadge}>Highlight</span>
                     )}
                   </article>
+                );
+
+                if (project.slug) {
+                  return (
+                    <Link
+                      href={`/portfolio/${project.slug}`}
+                      key={project.id}
+                      className={styles.projectCardLink}
+                    >
+                      {cardContent}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key={project.id} className={styles.projectCardWrapper}>
+                    {cardContent}
+                  </div>
                 );
               })}
             </div>

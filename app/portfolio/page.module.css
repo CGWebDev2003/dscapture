@@ -123,9 +123,25 @@
 
 .projectsGrid {
   display: grid;
-  --project-card-min-width: clamp(200px, 24vw, 280px);
-  grid-template-columns: repeat(auto-fit, minmax(var(--project-card-min-width), 1fr));
+  --project-card-min-width: clamp(220px, 22vw, 320px);
+  grid-template-columns: repeat(3, minmax(var(--project-card-min-width), 1fr));
   gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.projectCardLink,
+.projectCardWrapper {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.projectCardLink {
+  cursor: pointer;
+}
+
+.projectCardLink:focus-visible .projectCard,
+.projectCardLink:hover .projectCard {
+  transform: translateY(-6px);
 }
 
 .projectCard {
@@ -134,6 +150,17 @@
   overflow: hidden;
   box-shadow: 0 24px 45px rgba(5, 10, 22, 0.4);
   --project-card-aspect-ratio: 3 / 4;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.projectCardLink:hover .projectCard,
+.projectCardLink:focus-visible .projectCard {
+  box-shadow: 0 28px 55px rgba(5, 10, 22, 0.55);
+}
+
+.projectCardLink:hover .projectLink,
+.projectCardLink:focus-visible .projectLink {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .projectCoverWrapper {
@@ -185,25 +212,16 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  align-self: flex-start;
   padding: 0.65rem 1.35rem;
   border-radius: 999px;
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 600;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.projectLink {
-  align-self: flex-start;
-  border: none;
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
-}
-
-.projectLink:hover {
-  background: rgba(255, 255, 255, 0.28);
-  color: #ffffff;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .projectOverlay {
@@ -246,6 +264,10 @@
   .projectColumn {
     align-items: stretch;
   }
+
+  .projectsGrid {
+    grid-template-columns: repeat(2, minmax(var(--project-card-min-width), 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -258,7 +280,7 @@
   }
 
   .projectsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
