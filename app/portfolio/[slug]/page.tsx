@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import type { CSSProperties } from "react";
 import styles from "./page.module.css";
 import { supabase } from "@/lib/supabaseClient";
 import ProjectGallery from "@/components/portfolio/ProjectGallery/ProjectGallery";
@@ -138,9 +139,16 @@ export default async function PortfolioProjectPage({ params }: ProjectPageProps)
   }
 
   const heroImage = project.cover_public_url ?? null;
+  const backgroundImageUrl = images[0]?.public_url ?? heroImage;
+  const pageStyle = backgroundImageUrl
+    ? ({
+        "--hero-background-image": `url(${backgroundImageUrl})`,
+        "--hero-background-opacity": "1",
+      } as CSSProperties)
+    : undefined;
 
   return (
-    <div className={styles.projectPage}>
+    <div className={styles.projectPage} style={pageStyle}>
       <div className={styles.heroSection}>
         <div className={styles.heroText}>
           <Link href="/portfolio" className={styles.backLink}>
