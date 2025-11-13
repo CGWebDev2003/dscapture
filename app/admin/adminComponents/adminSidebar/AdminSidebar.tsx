@@ -106,6 +106,11 @@ const AdminSidebar = () => {
                 label: "Homepage",
             },
             {
+                href: "/admin/photographer-intro",
+                icon: "bi-person-badge",
+                label: "Fotografen-Vorstellung",
+            },
+            {
                 href: "/admin/reviews",
                 icon: "bi-chat-quote",
                 label: "Rezensionen",

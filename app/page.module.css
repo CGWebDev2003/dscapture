@@ -135,6 +135,51 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
+.photographerSection {
+  background: #05070f;
+  color: white;
+  padding: clamp(3rem, 5vw, 5rem) 1.5rem;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.photographerWrapper {
+  width: min(960px, 66vw);
+}
+
+.photographerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.photographerHeading {
+  margin: 0;
+  font-size: clamp(2rem, 2.4vw + 1rem, 2.8rem);
+  font-weight: 600;
+}
+
+.photographerSubheading {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.2vw + 0.6rem, 1.45rem);
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.photographerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: clamp(1rem, 1vw + 0.6rem, 1.2rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.photographerBody p {
+  margin: 0;
+}
+
 .reviewsSection {
   /* background: linear-gradient(180deg, rgba(9, 14, 28, 0.92), rgba(9, 14, 28, 0.86)); */
   color: white;
@@ -270,6 +315,10 @@
     gap: 5rem !important;
   }
 
+  .photographerWrapper {
+    width: min(720px, 90vw);
+  }
+
   .textContainer {
     max-width: 640px;
   }
@@ -313,6 +362,10 @@
 
   .uspSection {
     padding: 2rem 1rem;
+  }
+
+  .photographerWrapper {
+    width: 100%;
   }
 
   .uspHeading {
