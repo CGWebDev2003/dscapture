@@ -131,6 +131,38 @@
   justify-content: space-between;
 }
 
+.privacyField {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(32, 43, 72, 0.12);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+}
+
+.privacyLabel {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: rgba(32, 43, 72, 0.75);
+}
+
+.privacyLabel input {
+  margin-top: 0.2rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--primary);
+}
+
+.privacyLabel a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.privacyLabel a:hover {
+  text-decoration: underline;
+}
+
 .formFooter span {
   color: rgba(32, 43, 72, 0.65);
   font-size: 0.95rem;
@@ -278,6 +310,15 @@
 @media (max-width: 768px) {
   .page {
     padding-top: 4rem;
+  }
+
+  .privacyField {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .privacyLabel {
+    align-items: flex-start;
   }
 
   .formSection {
