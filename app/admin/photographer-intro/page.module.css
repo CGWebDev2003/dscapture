@@ -1,0 +1,155 @@
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 2rem 0 3rem;
+}
+
+.header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.header p {
+  margin: 0;
+  max-width: 720px;
+  color: rgba(32, 43, 72, 0.7);
+  line-height: 1.6;
+}
+
+.formCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 22px 45px rgba(23, 30, 51, 0.08);
+  border: 1px solid rgba(32, 43, 72, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.formHeader h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+
+.formHeader p {
+  margin: 0;
+  color: rgba(32, 43, 72, 0.6);
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field label {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(32, 43, 72, 0.18);
+  background-color: #f9fafb;
+  color: var(--primary);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 220px;
+  line-height: 1.6;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: rgba(32, 43, 72, 0.45);
+  box-shadow: 0 0 0 4px rgba(32, 43, 72, 0.12);
+}
+
+.helperText {
+  margin: -0.25rem 0 0;
+  color: rgba(32, 43, 72, 0.55);
+  font-size: 0.85rem;
+}
+
+.statusMessage,
+.errorMessage {
+  margin: 0;
+  padding: 0.85rem 1.2rem;
+  border-radius: 14px;
+  font-weight: 500;
+}
+
+.statusMessage {
+  background: rgba(46, 204, 113, 0.14);
+  color: #1d8e4c;
+  border: 1px solid rgba(46, 204, 113, 0.22);
+}
+
+.errorMessage {
+  background: rgba(214, 69, 69, 0.12);
+  color: #a02323;
+  border: 1px solid rgba(214, 69, 69, 0.18);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  border: none;
+  background: linear-gradient(135deg, #202b48, #384872);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(32, 43, 72, 0.25);
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 32px rgba(32, 43, 72, 0.35);
+}
+
+.primaryButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .formCard {
+    padding: 1.5rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

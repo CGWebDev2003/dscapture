@@ -23,6 +23,12 @@ type Review = {
   rating: number;
 };
 
+type PhotographerIntro = {
+  heading: string;
+  subheading: string | null;
+  body: string;
+};
+
 const FALLBACK_USP_ITEMS: UspItem[] = [
   {
     title: "Ganzheitliche Markenstrategie",
@@ -76,12 +82,21 @@ const FALLBACK_REVIEWS: Review[] = [
   },
 ];
 
+const FALLBACK_PHOTOGRAPHER_INTRO: PhotographerIntro = {
+  heading: "Der Fotograf hinter DS_Capture",
+  subheading: "Daniel Szymański vereint künstlerische Vision und strategische Markenführung.",
+  body:
+    "Mit über einem Jahrzehnt Erfahrung in Fotografie, Regie und visueller Kommunikation entwickelt Daniel Szymański Bildwelten, die Markenidentitäten erlebbar machen. Von der ersten Idee bis zur finalen Produktion begleitet er Unternehmen als kreativer Sparringspartner – analytisch, präzise und mit Gespür für Emotionen.",
+};
+
 const HomePageClient = () => {
   const { scrollY } = useScroll();
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [overlayImageUrl, setOverlayImageUrl] = useState<string | null>(null);
   const [uspItems, setUspItems] = useState<UspItem[]>(FALLBACK_USP_ITEMS);
   const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS);
+  const [photographerIntro, setPhotographerIntro] =
+    useState<PhotographerIntro>(FALLBACK_PHOTOGRAPHER_INTRO);
 
   const bgY = useTransform(scrollY, [0, 600], [0, 200]);
 
@@ -102,11 +117,18 @@ const HomePageClient = () => {
         .select("id, author, role, quote, rating, display_order")
         .order("display_order", { ascending: true });
 
-      const [imageResult, uspResult, reviewResult] = await Promise.all([
-        imagePromise,
-        uspPromise,
-        reviewsPromise,
-      ]);
+      const photographerIntroPromise = supabase
+        .from("homepage_photographer_intro")
+        .select("heading, subheading, body")
+        .maybeSingle();
+
+      const [imageResult, uspResult, reviewResult, photographerIntroResult] =
+        await Promise.all([
+          imagePromise,
+          uspPromise,
+          reviewsPromise,
+          photographerIntroPromise,
+        ]);
 
       if (!isMounted) {
         return;
@@ -176,6 +198,26 @@ const HomePageClient = () => {
           setReviews(normalizedReviews);
         }
       }
+
+      const { data: photographerIntroData, error: photographerIntroError } =
+        photographerIntroResult;
+
+      if (photographerIntroError) {
+        if (photographerIntroError.code !== "PGRST116") {
+          console.error(
+            "Fehler beim Laden der Fotografen-Vorstellung:",
+            photographerIntroError.message,
+          );
+        }
+      } else if (photographerIntroData) {
+        const heading =
+          photographerIntroData.heading?.trim() || FALLBACK_PHOTOGRAPHER_INTRO.heading;
+        const subheading = photographerIntroData.subheading?.trim() ?? null;
+        const body =
+          photographerIntroData.body?.trim() || FALLBACK_PHOTOGRAPHER_INTRO.body;
+
+        setPhotographerIntro({ heading, subheading, body });
+      }
     };
 
     void fetchHomepageContent();
@@ -216,6 +258,31 @@ const HomePageClient = () => {
                 <p>{usp.title}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className={styles.photographerSection}
+        aria-label="Vorstellung des Fotografen"
+      >
+        <div className={styles.photographerWrapper}>
+          <div className={styles.photographerContent}>
+            <h2 className={styles.photographerHeading}>{photographerIntro.heading}</h2>
+            {photographerIntro.subheading ? (
+              <p className={styles.photographerSubheading}>
+                {photographerIntro.subheading}
+              </p>
+            ) : null}
+            <div className={styles.photographerBody}>
+              {photographerIntro.body
+                .split(/\n{2,}/)
+                .map((paragraph) => paragraph.trim())
+                .filter((paragraph) => paragraph.length > 0)
+                .map((paragraph, index) => (
+                  <p key={`photographer-paragraph-${index}`}>{paragraph}</p>
+                ))}
+            </div>
           </div>
         </div>
       </section>
