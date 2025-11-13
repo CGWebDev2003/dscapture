@@ -185,6 +185,8 @@ export default async function PortfolioPage() {
                       href={`/portfolio/${project.slug}`}
                       key={project.id}
                       className={styles.projectCardLink}
+                      aria-label={`${project.title} ansehen`}
+                      title={project.title}
                     >
                       {cardContent}
                     </Link>
