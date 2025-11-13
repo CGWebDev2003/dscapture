@@ -218,7 +218,7 @@ const AdminSidebar = () => {
                     isItemActive(href, matchPath),
                 );
 
-                if (hasActiveChild && !nextState[item.id]) {
+                if (hasActiveChild && typeof nextState[item.id] === "undefined") {
                     nextState[item.id] = true;
                     hasUpdates = true;
                 }
