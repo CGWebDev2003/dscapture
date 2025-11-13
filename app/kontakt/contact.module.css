@@ -94,19 +94,19 @@
   border-radius: 18px;
   border: 1px solid rgba(32, 43, 72, 0.12);
   background: rgba(255, 255, 255, 0.75);
-  color: var(--primary);
+  color: black;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .fieldGroup input::placeholder,
 .fieldGroup textarea::placeholder {
-  color: rgba(32, 43, 72, 0.35);
+  color: black;
 }
 
 .fieldGroup input::placeholder,
 .fieldGroup textarea::placeholder {
-  color: rgba(244, 244, 244, 0.45);
+  color: #a7a7a7;
 }
 
 .fieldGroup input:focus,
@@ -118,8 +118,9 @@
 }
 
 .fieldGroup textarea {
-  resize: vertical;
+  resize: none;
   min-height: 160px;
+  font-family: "Roboto", sans-serif;
 }
 
 .formFooter {
@@ -207,7 +208,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(32, 43, 72, 0.5);
+  color: var(--primary) !important;
 }
 
 .contactList a {
