@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { supabase } from "@/lib/supabaseClient";
+import ContactButton from "../buttons/contactButton/ContactButton";
 
 import styles from "@/app/page.module.css";
-import { supabase } from "@/lib/supabaseClient";
-import Link from "next/link";
 
 const FALLBACK_BACKGROUND = "/DJI_0727.jpg";
 const FALLBACK_OVERLAY = "/dawid3Mask.png";
@@ -244,7 +244,9 @@ const HomePageClient = () => {
             <div className={styles.textContainer}>
               <h1>Visuelle Exzellenz. Digitale Präzision.</h1>
               <p>DS_Capture vereint Design, Strategie und Technologie zu einem klaren Markenauftritt.</p>
-              <button className={styles.ctaButton}>Mehr erfahren</button>
+              <div className={styles.buttonBox}>
+                <ContactButton />
+              </div>
             </div>
           </div>
         </div>
@@ -284,7 +286,7 @@ const HomePageClient = () => {
                   <p key={`photographer-paragraph-${index}`}>{paragraph}</p>
                 ))}
             </div>
-            <Link className="contactButton" href="/kontakt">Jetzt Kontaktieren <i className="bi bi-arrow-right"></i></Link>
+            <ContactButton />
           </div>
         </div>
       </section>
@@ -325,6 +327,7 @@ const HomePageClient = () => {
               </article>
             ))}
           </div>
+          
         </div>
       </section>
 
