@@ -14,12 +14,19 @@ const ContactPageClient = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasAcceptedPrivacy, setHasAcceptedPrivacy] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!name.trim() || !email.trim() || !message.trim()) {
       setError("Bitte fülle alle Pflichtfelder aus.");
+      setFeedback(null);
+      return;
+    }
+
+    if (!hasAcceptedPrivacy) {
+      setError("Bitte akzeptiere die Datenschutzbestimmungen.");
       setFeedback(null);
       return;
     }
@@ -71,6 +78,7 @@ const ContactPageClient = () => {
     setSubject("");
     setPhone("");
     setMessage("");
+    setHasAcceptedPrivacy(false);
   };
 
   return (
@@ -155,6 +163,25 @@ const ContactPageClient = () => {
               rows={6}
               required
             />
+          </div>
+
+          <div className={styles.privacyField}>
+            <label className={styles.privacyLabel}>
+              <input
+                type="checkbox"
+                checked={hasAcceptedPrivacy}
+                onChange={(event) => setHasAcceptedPrivacy(event.target.checked)}
+              />
+              <span>
+                Ich habe die
+                {" "}
+                <a href="/datenschutz" target="_blank" rel="noopener noreferrer">
+                  Datenschutzbestimmungen
+                </a>
+                {" "}
+                gelesen und akzeptiere sie.
+              </span>
+            </label>
           </div>
 
           <div className={styles.formFooter}>
