@@ -72,11 +72,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
 }
 
 .copyright {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.bottomBarRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .createdByText {
@@ -90,6 +100,25 @@
   font-weight: 700;
 }
 
+.preferencesButton {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  padding: 0.5rem 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.preferencesButton:hover,
+.preferencesButton:focus-visible {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
 @media (max-width: 600px) {
   .footer {
     padding: 3rem 1.25rem 1.5rem;
@@ -97,5 +126,21 @@
 
   .brandingText {
     max-width: 100%;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bottomBarRight {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .preferencesButton {
+    width: 100%;
+    text-align: center;
   }
 }
