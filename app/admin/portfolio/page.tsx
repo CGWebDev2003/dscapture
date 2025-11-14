@@ -43,6 +43,10 @@ type PortfolioProjectImage = {
   id: string;
   project_id: string;
   caption: string | null;
+  alt_text: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  meta_keywords: string | null;
   file_path: string;
   public_url: string;
   display_order: number;
@@ -142,11 +146,27 @@ export default function AdminPortfolioPage() {
     Record<string, number>
   >({});
   const [imageCaptions, setImageCaptions] = useState<Record<string, string>>({});
+  const [imageAltTexts, setImageAltTexts] = useState<Record<string, string>>({});
+  const [imageMetaTitles, setImageMetaTitles] = useState<Record<string, string>>({});
+  const [imageMetaDescriptions, setImageMetaDescriptions] = useState<
+    Record<string, string>
+  >({});
+  const [imageMetaKeywords, setImageMetaKeywords] = useState<
+    Record<string, string>
+  >({});
   const [uploadingImageProjectId, setUploadingImageProjectId] = useState<
     string | null
   >(null);
-  const [savingCaptionId, setSavingCaptionId] = useState<string | null>(null);
+  const [savingMetadataId, setSavingMetadataId] = useState<string | null>(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  const [activeMetadataImage, setActiveMetadataImage] =
+    useState<PortfolioProjectImage | null>(null);
+  const [metadataModalValues, setMetadataModalValues] = useState({
+    altText: "",
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+  });
 
   const existingProjectSlugs = useMemo(
     () =>
@@ -223,7 +243,7 @@ export default function AdminPortfolioPage() {
             supabase
               .from("portfolio_project_images")
               .select(
-                "id, project_id, caption, file_path, public_url, display_order",
+                "id, project_id, caption, alt_text, meta_title, meta_description, meta_keywords, file_path, public_url, display_order",
               )
               .order("display_order", { ascending: true })
               .order("created_at", { ascending: true }),
@@ -284,7 +304,38 @@ export default function AdminPortfolioPage() {
           },
           {},
         );
+        const altTextMap = (imagesData ?? []).reduce<Record<string, string>>(
+          (accumulator, image) => {
+            accumulator[image.id] = image.alt_text ?? "";
+            return accumulator;
+          },
+          {},
+        );
+        const metaTitleMap = (imagesData ?? []).reduce<Record<string, string>>(
+          (accumulator, image) => {
+            accumulator[image.id] = image.meta_title ?? "";
+            return accumulator;
+          },
+          {},
+        );
+        const metaDescriptionMap = (
+          imagesData ?? []
+        ).reduce<Record<string, string>>((accumulator, image) => {
+          accumulator[image.id] = image.meta_description ?? "";
+          return accumulator;
+        }, {});
+        const metaKeywordMap = (imagesData ?? []).reduce<Record<string, string>>(
+          (accumulator, image) => {
+            accumulator[image.id] = image.meta_keywords ?? "";
+            return accumulator;
+          },
+          {},
+        );
         setImageCaptions(captionMap);
+        setImageAltTexts(altTextMap);
+        setImageMetaTitles(metaTitleMap);
+        setImageMetaDescriptions(metaDescriptionMap);
+        setImageMetaKeywords(metaKeywordMap);
       } catch (error) {
         console.error("Fehler beim Laden der Portfolio-Daten:", error);
         setProjectsError(
@@ -1085,6 +1136,10 @@ export default function AdminPortfolioPage() {
         (existingImages[existingImages.length - 1]?.display_order ?? 0) + 1;
       const newImages: PortfolioProjectImage[] = [];
       const newCaptions: Record<string, string> = {};
+      const newAltTexts: Record<string, string> = {};
+      const newMetaTitles: Record<string, string> = {};
+      const newMetaDescriptions: Record<string, string> = {};
+      const newMetaKeywords: Record<string, string> = {};
 
       for (const file of selectedFiles) {
         const fileExtension = file.name.split(".").pop();
@@ -1118,12 +1173,16 @@ export default function AdminPortfolioPage() {
           .insert({
             project_id: project.id,
             caption: null,
+            alt_text: null,
+            meta_title: null,
+            meta_description: null,
+            meta_keywords: null,
             file_path: uploadData?.path ?? filePath,
             public_url: publicUrl,
             display_order: nextDisplayOrder,
           })
           .select(
-            "id, project_id, caption, file_path, public_url, display_order",
+            "id, project_id, caption, alt_text, meta_title, meta_description, meta_keywords, file_path, public_url, display_order",
           )
           .single();
 
@@ -1134,6 +1193,10 @@ export default function AdminPortfolioPage() {
         nextDisplayOrder += 1;
         newImages.push(data);
         newCaptions[data.id] = "";
+        newAltTexts[data.id] = "";
+        newMetaTitles[data.id] = "";
+        newMetaDescriptions[data.id] = "";
+        newMetaKeywords[data.id] = "";
 
         await logUserAction({
           action: "portfolio_project_image_uploaded",
@@ -1163,6 +1226,13 @@ export default function AdminPortfolioPage() {
         return updated;
       });
       setImageCaptions((previous) => ({ ...previous, ...newCaptions }));
+      setImageAltTexts((previous) => ({ ...previous, ...newAltTexts }));
+      setImageMetaTitles((previous) => ({ ...previous, ...newMetaTitles }));
+      setImageMetaDescriptions((previous) => ({
+        ...previous,
+        ...newMetaDescriptions,
+      }));
+      setImageMetaKeywords((previous) => ({ ...previous, ...newMetaKeywords }));
 
       showToast({
         message:
@@ -1252,6 +1322,26 @@ export default function AdminPortfolioPage() {
         delete updated[image.id];
         return updated;
       });
+      setImageAltTexts((previous) => {
+        const updated = { ...previous };
+        delete updated[image.id];
+        return updated;
+      });
+      setImageMetaTitles((previous) => {
+        const updated = { ...previous };
+        delete updated[image.id];
+        return updated;
+      });
+      setImageMetaDescriptions((previous) => {
+        const updated = { ...previous };
+        delete updated[image.id];
+        return updated;
+      });
+      setImageMetaKeywords((previous) => {
+        const updated = { ...previous };
+        delete updated[image.id];
+        return updated;
+      });
 
       await logUserAction({
         action: "portfolio_project_image_deleted",
@@ -1291,19 +1381,54 @@ export default function AdminPortfolioPage() {
     setImageCaptions((previous) => ({ ...previous, [imageId]: caption }));
   };
 
-  const handleGalleryCaptionSave = async (image: PortfolioProjectImage) => {
-    setSavingCaptionId(image.id);
+  const persistImageMetadata = async (
+    image: PortfolioProjectImage,
+    overrides?: Partial<{
+      caption: string;
+      altText: string;
+      metaTitle: string;
+      metaDescription: string;
+      metaKeywords: string;
+    }>,
+  ): Promise<boolean> => {
+    setSavingMetadataId(image.id);
 
     try {
       const currentUser = await fetchCurrentUser();
-      const caption = imageCaptions[image.id]?.trim() || null;
+      const captionInput =
+        overrides?.caption ?? imageCaptions[image.id] ?? "";
+      const altTextInput =
+        overrides?.altText ?? imageAltTexts[image.id] ?? "";
+      const metaTitleInput =
+        overrides?.metaTitle ?? imageMetaTitles[image.id] ?? "";
+      const metaDescriptionInput =
+        overrides?.metaDescription ?? imageMetaDescriptions[image.id] ?? "";
+      const metaKeywordsInput =
+        overrides?.metaKeywords ?? imageMetaKeywords[image.id] ?? "";
+
+      const caption = captionInput.trim() || null;
+      const altText = altTextInput.trim() || null;
+      const metaTitle = metaTitleInput.trim() || null;
+      const metaDescription = metaDescriptionInput.trim() || null;
+      const parsedKeywords = metaKeywordsInput
+        .split(",")
+        .map((keyword) => keyword.trim())
+        .filter((keyword) => keyword.length > 0);
+      const metaKeywords =
+        parsedKeywords.length > 0 ? parsedKeywords.join(", ") : null;
 
       const { data, error } = await supabase
         .from("portfolio_project_images")
-        .update({ caption })
+        .update({
+          caption,
+          alt_text: altText,
+          meta_title: metaTitle,
+          meta_description: metaDescription,
+          meta_keywords: metaKeywords,
+        })
         .eq("id", image.id)
         .select(
-          "id, project_id, caption, file_path, public_url, display_order",
+          "id, project_id, caption, alt_text, meta_title, meta_description, meta_keywords, file_path, public_url, display_order",
         )
         .single();
 
@@ -1317,9 +1442,44 @@ export default function AdminPortfolioPage() {
           item.id === image.id ? data : item,
         ),
       }));
+      setImageCaptions((previous) => ({
+        ...previous,
+        [image.id]: data.caption ?? "",
+      }));
+      setImageAltTexts((previous) => ({
+        ...previous,
+        [image.id]: data.alt_text ?? "",
+      }));
+      setImageMetaTitles((previous) => ({
+        ...previous,
+        [image.id]: data.meta_title ?? "",
+      }));
+      setImageMetaDescriptions((previous) => ({
+        ...previous,
+        [image.id]: data.meta_description ?? "",
+      }));
+      setImageMetaKeywords((previous) => ({
+        ...previous,
+        [image.id]: data.meta_keywords ?? "",
+      }));
+      setActiveMetadataImage((previous) =>
+        previous?.id === data.id ? data : previous,
+      );
+      setMetadataModalValues((previous) => {
+        if (activeMetadataImage?.id !== data.id) {
+          return previous;
+        }
+
+        return {
+          altText: data.alt_text ?? "",
+          metaTitle: data.meta_title ?? "",
+          metaDescription: data.meta_description ?? "",
+          metaKeywords: data.meta_keywords ?? "",
+        };
+      });
 
       await logUserAction({
-        action: "portfolio_project_image_caption_saved",
+        action: "portfolio_project_image_metadata_saved",
         context: "admin",
         userId: currentUser.id,
         userEmail: currentUser.email ?? null,
@@ -1328,24 +1488,86 @@ export default function AdminPortfolioPage() {
         metadata: {
           projectId: image.project_id,
           caption,
+          altText,
+          metaTitle,
+          metaDescription,
+          metaKeywords: parsedKeywords,
         },
       });
 
       showToast({
-        message: "Bildbeschreibung wurde gespeichert.",
+        message: "Bildmetadaten wurden gespeichert.",
         type: "success",
       });
+
+      return true;
     } catch (error) {
-      console.error("Fehler beim Speichern der Bildbeschreibung:", error);
+      console.error("Fehler beim Speichern der Bildmetadaten:", error);
       showToast({
         message:
           error instanceof Error
             ? error.message
-            : "Die Bildbeschreibung konnte nicht gespeichert werden.",
+            : "Die Bildmetadaten konnten nicht gespeichert werden.",
         type: "error",
       });
+      return false;
     } finally {
-      setSavingCaptionId(null);
+      setSavingMetadataId(null);
+    }
+  };
+
+  const handleGalleryDetailsSave = async (image: PortfolioProjectImage) => {
+    await persistImageMetadata(image);
+  };
+
+  const handleOpenMetadataModal = (image: PortfolioProjectImage) => {
+    setActiveMetadataImage(image);
+    setMetadataModalValues({
+      altText: imageAltTexts[image.id] ?? "",
+      metaTitle: imageMetaTitles[image.id] ?? "",
+      metaDescription: imageMetaDescriptions[image.id] ?? "",
+      metaKeywords: imageMetaKeywords[image.id] ?? "",
+    });
+  };
+
+  const handleCloseMetadataModal = () => {
+    setActiveMetadataImage(null);
+    setMetadataModalValues({
+      altText: "",
+      metaTitle: "",
+      metaDescription: "",
+      metaKeywords: "",
+    });
+  };
+
+  const handleMetadataModalFieldChange = (
+    field: keyof typeof metadataModalValues,
+    value: string,
+  ) => {
+    setMetadataModalValues((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+  };
+
+  const handleMetadataModalSubmit = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    if (!activeMetadataImage) {
+      return;
+    }
+
+    const wasSuccessful = await persistImageMetadata(activeMetadataImage, {
+      altText: metadataModalValues.altText,
+      metaTitle: metadataModalValues.metaTitle,
+      metaDescription: metadataModalValues.metaDescription,
+      metaKeywords: metadataModalValues.metaKeywords,
+    });
+
+    if (wasSuccessful) {
+      handleCloseMetadataModal();
     }
   };
 
@@ -1839,7 +2061,11 @@ export default function AdminPortfolioPage() {
                                     <div className={styles.galleryImageWrapper}>
                                       <Image
                                         src={image.public_url}
-                                        alt={image.caption || project.title}
+                                        alt={
+                                          image.alt_text ||
+                                          image.caption ||
+                                          project.title
+                                        }
                                         width={200}
                                         height={140}
                                         className={styles.galleryImage}
@@ -1850,17 +2076,65 @@ export default function AdminPortfolioPage() {
                                         </span>
                                       ) : null}
                                     </div>
-                                    <input
-                                      type="text"
-                                      value={imageCaptions[image.id] ?? ""}
-                                      onChange={(event) =>
-                                        handleGalleryCaptionChange(
-                                          image.id,
-                                          event.target.value,
-                                        )
-                                      }
-                                      placeholder="Bildbeschreibung"
-                                    />
+                                    <div className={styles.galleryField}>
+                                      <label htmlFor={`image-caption-${image.id}`}>
+                                        Bildbeschreibung
+                                      </label>
+                                      <input
+                                        id={`image-caption-${image.id}`}
+                                        type="text"
+                                        value={imageCaptions[image.id] ?? ""}
+                                        onChange={(event) =>
+                                          handleGalleryCaptionChange(
+                                            image.id,
+                                            event.target.value,
+                                          )
+                                        }
+                                        placeholder="z. B. Sonnenaufgang über den Alpen"
+                                      />
+                                    </div>
+                                    <div className={styles.metadataSummary}>
+                                      <div>
+                                        <span className={styles.metadataLabel}>
+                                          Alt-Text:
+                                        </span>
+                                        <span>
+                                          {imageAltTexts[image.id]?.trim()
+                                            ? imageAltTexts[image.id]
+                                            : "Nicht gesetzt"}
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <span className={styles.metadataLabel}>
+                                          Meta Title:
+                                        </span>
+                                        <span>
+                                          {imageMetaTitles[image.id]?.trim()
+                                            ? imageMetaTitles[image.id]
+                                            : "Nicht gesetzt"}
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <span className={styles.metadataLabel}>
+                                          Meta Description:
+                                        </span>
+                                        <span>
+                                          {imageMetaDescriptions[image.id]?.trim()
+                                            ? imageMetaDescriptions[image.id]
+                                            : "Nicht gesetzt"}
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <span className={styles.metadataLabel}>
+                                          Meta Keywords:
+                                        </span>
+                                        <span>
+                                          {imageMetaKeywords[image.id]?.trim()
+                                            ? imageMetaKeywords[image.id]
+                                            : "Nicht gesetzt"}
+                                        </span>
+                                      </div>
+                                    </div>
                                     <div className={styles.galleryActions}>
                                       <button
                                         type="button"
@@ -1879,12 +2153,20 @@ export default function AdminPortfolioPage() {
                                       <button
                                         type="button"
                                         className="adminButton"
-                                        onClick={() => handleGalleryCaptionSave(image)}
-                                        disabled={savingCaptionId === image.id}
+                                        onClick={() => handleOpenMetadataModal(image)}
+                                        disabled={savingMetadataId === image.id}
                                       >
-                                        {savingCaptionId === image.id
+                                        Meta-Tags bearbeiten
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="adminButton"
+                                        onClick={() => handleGalleryDetailsSave(image)}
+                                        disabled={savingMetadataId === image.id}
+                                      >
+                                        {savingMetadataId === image.id
                                           ? "Speichere..."
-                                          : "Beschreibung speichern"}
+                                          : "Bildinformationen speichern"}
                                       </button>
                                       <button
                                         type="button"
@@ -1942,6 +2224,133 @@ export default function AdminPortfolioPage() {
           </div>
         </section>
       </div>
+      {activeMetadataImage ? (
+        <div
+          className={styles.metadataModalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`metadata-modal-title-${activeMetadataImage.id}`}
+          onClick={handleCloseMetadataModal}
+        >
+          <div
+            className={styles.metadataModal}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={styles.metadataModalHeader}>
+              <h3 id={`metadata-modal-title-${activeMetadataImage.id}`}>
+                Alt-Text & Meta-Tags bearbeiten
+              </h3>
+              <button
+                type="button"
+                className={styles.metadataModalClose}
+                onClick={handleCloseMetadataModal}
+                aria-label="Modal schließen"
+              >
+                &times;
+              </button>
+            </div>
+            <div className={styles.metadataModalBody}>
+              <div className={styles.metadataModalPreview}>
+                <Image
+                  src={activeMetadataImage.public_url}
+                  alt={
+                    activeMetadataImage.alt_text ||
+                    activeMetadataImage.caption ||
+                    "Projektbild"
+                  }
+                  width={320}
+                  height={200}
+                  className={styles.metadataModalImage}
+                />
+                {activeMetadataImage.caption ? (
+                  <p className={styles.metadataModalCaption}>
+                    {activeMetadataImage.caption}
+                  </p>
+                ) : null}
+              </div>
+              <form
+                className={styles.metadataModalForm}
+                onSubmit={handleMetadataModalSubmit}
+              >
+                <label htmlFor={`metadata-alt-text-${activeMetadataImage.id}`}>
+                  Alt-Text
+                </label>
+                <input
+                  id={`metadata-alt-text-${activeMetadataImage.id}`}
+                  type="text"
+                  value={metadataModalValues.altText}
+                  onChange={(event) =>
+                    handleMetadataModalFieldChange("altText", event.target.value)
+                  }
+                  placeholder="z. B. Bergsteiger bei Sonnenaufgang"
+                />
+                <label htmlFor={`metadata-meta-title-${activeMetadataImage.id}`}>
+                  Meta Title
+                </label>
+                <input
+                  id={`metadata-meta-title-${activeMetadataImage.id}`}
+                  type="text"
+                  value={metadataModalValues.metaTitle}
+                  onChange={(event) =>
+                    handleMetadataModalFieldChange("metaTitle", event.target.value)
+                  }
+                  placeholder="Titel für das Bild"
+                />
+                <label htmlFor={`metadata-meta-description-${activeMetadataImage.id}`}>
+                  Meta Description
+                </label>
+                <textarea
+                  id={`metadata-meta-description-${activeMetadataImage.id}`}
+                  value={metadataModalValues.metaDescription}
+                  onChange={(event) =>
+                    handleMetadataModalFieldChange(
+                      "metaDescription",
+                      event.target.value,
+                    )
+                  }
+                  placeholder="Kurze Beschreibung für Suchmaschinen"
+                />
+                <label htmlFor={`metadata-meta-keywords-${activeMetadataImage.id}`}>
+                  Meta Keywords
+                </label>
+                <input
+                  id={`metadata-meta-keywords-${activeMetadataImage.id}`}
+                  type="text"
+                  value={metadataModalValues.metaKeywords}
+                  onChange={(event) =>
+                    handleMetadataModalFieldChange(
+                      "metaKeywords",
+                      event.target.value,
+                    )
+                  }
+                  placeholder="z. B. Alpen, Sonnenaufgang, Bergtour"
+                />
+                <span className={styles.metadataModalHint}>
+                  Mehrere Begriffe mit Komma trennen.
+                </span>
+                <div className={styles.metadataModalActions}>
+                  <button
+                    type="button"
+                    className="adminButton"
+                    onClick={handleCloseMetadataModal}
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    type="submit"
+                    className="adminButton"
+                    disabled={savingMetadataId === activeMetadataImage.id}
+                  >
+                    {savingMetadataId === activeMetadataImage.id
+                      ? "Speichere..."
+                      : "Metadaten speichern"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

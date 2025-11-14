@@ -7,6 +7,10 @@ import styles from "./ProjectGallery.module.css";
 type GalleryImage = {
   id: string;
   caption: string | null;
+  alt_text: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  meta_keywords: string | null;
   public_url: string;
   display_order: number;
 };
@@ -87,45 +91,79 @@ export default function ProjectGallery({ images, projectTitle }: ProjectGalleryP
   return (
     <div className={styles.gallery}>
       <div className={styles.grid}>
-        {images.map((image, index) => (
-          <button
-            key={image.id}
-            type="button"
-            className={styles.thumbnailButton}
-            onClick={() => openLightbox(index)}
-            aria-label={`Bild ${index + 1} in Großansicht öffnen`}
-          >
-            <span
-              className={styles.thumbnailInner}
-              style={{
-                aspectRatio: imageRatios[image.id] ?? 4 / 3,
-              }}
-            >
-              <Image
-                src={image.public_url}
-                alt={image.caption ?? projectTitle}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 320px"
-                className={styles.thumbnailImage}
-                onLoadingComplete={({ naturalWidth, naturalHeight }) => {
-                  if (naturalWidth && naturalHeight) {
-                    setImageRatios((previous) => {
-                      if (previous[image.id]) {
-                        return previous;
-                      }
+        {images.map((image, index) => {
+          const imageAlt =
+            image.alt_text?.trim() ||
+            image.caption?.trim() ||
+            projectTitle;
+          const metaTitle =
+            image.meta_title?.trim() ||
+            image.caption?.trim() ||
+            projectTitle;
+          const metaDescription =
+            image.meta_description?.trim() ||
+            image.caption?.trim() ||
+            projectTitle;
+          const metaKeywords = (image.meta_keywords ?? "")
+            .split(",")
+            .map((keyword) => keyword.trim())
+            .filter((keyword) => keyword.length > 0)
+            .join(", ");
 
-                      return {
-                        ...previous,
-                        [image.id]: naturalWidth / naturalHeight,
-                      };
-                    });
-                  }
+          return (
+            <button
+              key={image.id}
+              type="button"
+              className={styles.thumbnailButton}
+              onClick={() => openLightbox(index)}
+              aria-label={`Bild ${index + 1} in Großansicht öffnen`}
+              data-meta-title={metaTitle}
+              data-meta-description={metaDescription}
+              data-meta-keywords={metaKeywords || undefined}
+            >
+              <span
+                className={styles.thumbnailInner}
+                style={{
+                  aspectRatio: imageRatios[image.id] ?? 4 / 3,
                 }}
-              />
-            </span>
-            {image.caption ? <span className={styles.thumbnailCaption}>{image.caption}</span> : null}
-          </button>
-        ))}
+                itemProp="associatedMedia"
+                itemScope
+                itemType="https://schema.org/ImageObject"
+              >
+                <Image
+                  src={image.public_url}
+                  alt={imageAlt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 320px"
+                  className={styles.thumbnailImage}
+                  itemProp="contentUrl"
+                  onLoadingComplete={({ naturalWidth, naturalHeight }) => {
+                    if (naturalWidth && naturalHeight) {
+                      setImageRatios((previous) => {
+                        if (previous[image.id]) {
+                          return previous;
+                        }
+
+                        return {
+                          ...previous,
+                          [image.id]: naturalWidth / naturalHeight,
+                        };
+                      });
+                    }
+                  }}
+                />
+                <meta itemProp="name" content={metaTitle} />
+                <meta itemProp="description" content={metaDescription} />
+                {metaKeywords ? (
+                  <meta itemProp="keywords" content={metaKeywords} />
+                ) : null}
+              </span>
+              {image.caption ? (
+                <span className={styles.thumbnailCaption}>{image.caption}</span>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
 
       {activeImage ? (
@@ -145,14 +183,49 @@ export default function ProjectGallery({ images, projectTitle }: ProjectGalleryP
               &times;
             </button>
 
-            <div className={styles.lightboxImageWrapper}>
+            <div
+              className={styles.lightboxImageWrapper}
+              itemScope
+              itemType="https://schema.org/ImageObject"
+            >
               <Image
                 src={activeImage.public_url}
-                alt={activeImage.caption ?? projectTitle}
+                alt={
+                  activeImage.alt_text?.trim() ||
+                  activeImage.caption?.trim() ||
+                  projectTitle
+                }
                 fill
                 sizes="100vw"
                 className={styles.lightboxImage}
+                itemProp="contentUrl"
               />
+              <meta
+                itemProp="name"
+                content={
+                  activeImage.meta_title?.trim() ||
+                  activeImage.caption?.trim() ||
+                  projectTitle
+                }
+              />
+              <meta
+                itemProp="description"
+                content={
+                  activeImage.meta_description?.trim() ||
+                  activeImage.caption?.trim() ||
+                  projectTitle
+                }
+              />
+              {(() => {
+                const keywords = (activeImage.meta_keywords ?? "")
+                  .split(",")
+                  .map((keyword) => keyword.trim())
+                  .filter((keyword) => keyword.length > 0)
+                  .join(", ");
+                return keywords ? (
+                  <meta itemProp="keywords" content={keywords} />
+                ) : null;
+              })()}
             </div>
 
             {activeImage.caption ? (
