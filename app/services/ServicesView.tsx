@@ -83,21 +83,25 @@ export default function ServicesView({ services }: ServicesViewProps) {
           >
             ›
           </button>
-        </div>
-        <div className={styles.pagination} role="tablist" aria-label="Service Auswahl">
-          {services.map((service, index) => (
-            <button
-              key={service.id}
-              type="button"
-              role="tab"
-              aria-selected={activeIndex === index}
-              aria-label={service.label}
-              className={
-                activeIndex === index ? `${styles.dot} ${styles.dotActive}` : styles.dot
-              }
-              onClick={() => setActiveIndex(index)}
-            />
-          ))}
+          <div
+            className={styles.pagination}
+            role="tablist"
+            aria-label="Service Auswahl"
+          >
+            {services.map((service, index) => (
+              <button
+                key={service.id}
+                type="button"
+                role="tab"
+                aria-selected={activeIndex === index}
+                aria-label={service.label}
+                className={
+                  activeIndex === index ? `${styles.dot} ${styles.dotActive}` : styles.dot
+                }
+                onClick={() => setActiveIndex(index)}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
