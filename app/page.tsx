@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import HomePageClient from "@/components/home/HomePageClient";
+import HomePageClient from "@/components/header/HomePageClient";
 import { applyPageMetadata, fetchPageMetadata } from "@/lib/pageMetadata";
 
 const defaultMetadata: Metadata = {
