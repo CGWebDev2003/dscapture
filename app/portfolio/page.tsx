@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import styles from "./page.module.css";
 import { applyPageMetadata, fetchPageMetadata } from "@/lib/pageMetadata";
 import { supabase } from "@/lib/supabaseClient";
+import ContactButton from "@/components/buttons/contactButton/ContactButton";
 
 const defaultMetadata: Metadata = {
   title: "Portfolio | DS_Capture",
@@ -120,9 +121,7 @@ export default async function PortfolioPage() {
           <h1 className={styles.heroTitle}>{heroHeadline}</h1>
           <p className={styles.heroDescription}>{heroDescription}</p>
           {heroCtaLabel && heroCtaUrl && (
-            <a className={styles.heroCta} href={heroCtaUrl}>
-              {heroCtaLabel}
-            </a>
+            <ContactButton />
           )}
         </div>
 
