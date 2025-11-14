@@ -179,8 +179,12 @@ export function CookieConsentProvider({
   );
 }
 
+export function useCookieConsentContext() {
+  return useContext(CookieConsentContext);
+}
+
 export function useCookieConsent() {
-  const context = useContext(CookieConsentContext);
+  const context = useCookieConsentContext();
 
   if (!context) {
     throw new Error("useCookieConsent must be used within a CookieConsentProvider");
