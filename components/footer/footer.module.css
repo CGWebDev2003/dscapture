@@ -1,5 +1,5 @@
 .footer {
-  background: var(--primary);
+  background: var(--primary-dark);
   color: var(--text-contrast);
   padding: 4rem 1.5rem 2rem;
   margin-top: auto;
@@ -101,6 +101,7 @@
 }
 
 .preferencesButton {
+  max-width: 12rem;
   background: transparent;
   color: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.4);

@@ -59,15 +59,7 @@ export default function Footer() {
                 {link.label}
               </Link>
             ))}
-          </nav>
-        </div>
-      </div>
-      <div className={styles.bottomBar}>
-        <p className={styles.copyright}>
-          © {new Date().getFullYear()} DS_Capture. Alle Rechte vorbehalten.
-        </p>
-        <div className={styles.bottomBarRight}>
-          {openPreferences && (
+            {openPreferences && (
             <button
               type="button"
               className={styles.preferencesButton}
@@ -76,6 +68,14 @@ export default function Footer() {
               Cookie-Einstellungen
             </button>
           )}
+          </nav>
+        </div>
+      </div>
+      <div className={styles.bottomBar}>
+        <p className={styles.copyright}>
+          © {new Date().getFullYear()} DS_Capture. Alle Rechte vorbehalten.
+        </p>
+        <div className={styles.bottomBarRight}>
           <p className={styles.createdByText}>
             Designed & Developed by <Link className={styles.flowefyLink} href="https://flowefy.de">flowefy.</Link>
           </p>
