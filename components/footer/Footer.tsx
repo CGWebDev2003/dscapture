@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./footer.module.css";
+import { useCookieConsentContext } from "@/components/cookieConsent/CookieConsentProvider";
 
 const sitemapLinks = [
   { href: "/", label: "Home" },
@@ -19,6 +20,8 @@ const legalLinks = [
 
 export default function Footer() {
   const pathname = usePathname();
+  const cookieConsent = useCookieConsentContext();
+  const openPreferences = cookieConsent?.openPreferences;
 
   if (pathname?.startsWith("/admin")) {
     return null;
@@ -63,9 +66,20 @@ export default function Footer() {
         <p className={styles.copyright}>
           © {new Date().getFullYear()} DS_Capture. Alle Rechte vorbehalten.
         </p>
-        <p className={styles.createdByText}>
-          Designed & Developed by <Link className={styles.flowefyLink} href="https://flowefy.de">flowefy.</Link>
-        </p>
+        <div className={styles.bottomBarRight}>
+          {openPreferences && (
+            <button
+              type="button"
+              className={styles.preferencesButton}
+              onClick={openPreferences}
+            >
+              Cookie-Einstellungen
+            </button>
+          )}
+          <p className={styles.createdByText}>
+            Designed & Developed by <Link className={styles.flowefyLink} href="https://flowefy.de">flowefy.</Link>
+          </p>
+        </div>
       </div>
     </footer>
   );
