@@ -22,6 +22,18 @@ type ServicesViewProps = {
 
 export default function ServicesView({ services }: ServicesViewProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  if (services.length === 0) {
+    return (
+      <main className={styles.page}>
+        <section className={styles.emptyState}>
+          <h1>Services</h1>
+          <p>Aktuell stehen keine Services zur Verfügung.</p>
+        </section>
+      </main>
+    );
+  }
+
   const activeService = services[activeIndex];
 
   const handlePrev = () => {
