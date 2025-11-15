@@ -7,17 +7,28 @@ interface SwiperBreakpointOptions {
   slidesPerView?: number;
 }
 
+interface SwiperPaginationOptions {
+  clickable?: boolean;
+  el?: string;
+  [key: string]: unknown;
+}
+
+interface SwiperNavigationOptions {
+  enabled?: boolean;
+  nextEl?: string;
+  prevEl?: string;
+  [key: string]: unknown;
+}
+
 interface SwiperProps {
   children: ReactNode;
   className?: string;
   modules?: unknown[];
-  pagination?: {
-    clickable?: boolean;
-  };
+  pagination?: SwiperPaginationOptions | boolean;
   spaceBetween?: number;
   slidesPerView?: number;
   breakpoints?: Record<number, SwiperBreakpointOptions>;
-  navigation?: boolean;
+  navigation?: boolean | SwiperNavigationOptions;
 }
 
 interface SwiperSlideProps {
@@ -87,6 +98,12 @@ const Swiper = ({
 
   const maxIndex = Math.max(slides.length - currentSlidesPerView, 0);
   const hasMultiplePages = maxIndex > 0;
+  const navigationEnabled =
+    typeof navigation === "boolean"
+      ? navigation
+      : navigation
+        ? navigation.enabled ?? true
+        : false;
   const handlePrev = useCallback(() => {
     setActiveIndex((prev) => {
       if (!hasMultiplePages) {
@@ -132,7 +149,7 @@ const Swiper = ({
         ))}
       </div>
 
-      {navigation && hasMultiplePages && (
+      {navigationEnabled && hasMultiplePages && (
         <>
           <button
             type="button"
