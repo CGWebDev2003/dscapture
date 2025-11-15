@@ -11,12 +11,31 @@ type NavigationLink = {
   label: string;
 };
 
+type SocialLink = {
+  href: string;
+  label: string;
+  icon: string;
+};
+
 const NAV_LINKS: NavigationLink[] = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/blog", label: "Blog" },
   { href: "/kontakt", label: "Kontakt" },
+];
+
+const SOCIAL_LINKS: SocialLink[] = [
+  {
+    href: "https://www.instagram.com/ds_capture_portraits/",
+    label: "Instagram",
+    icon: "bi-instagram",
+  },
+  {
+    href: "https://www.linkedin.com/in/dawid-chmielewski-860308209/",
+    label: "LinkedIn",
+    icon: "bi-linkedin",
+  },
 ];
 
 export default function Header() {
@@ -64,18 +83,17 @@ export default function Header() {
             </Link>
           ))}
           <div className={styles.socialMediaBox}>
-            <Link
-              className={styles.socialMediaLink}
-              href="https://www.instagram.com/ds_capture_portraits/"
-            >
-              <i className="bi bi-instagram" />
-            </Link>
-            <Link
-              className={styles.socialMediaLink}
-              href="https://www.linkedin.com/in/dawid-chmielewski-860308209/"
-            >
-              <i className="bi bi-linkedin" />
-            </Link>
+            {SOCIAL_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                className={styles.socialMediaLink}
+                href={link.href}
+                aria-label={link.label}
+              >
+                <i className={`bi ${link.icon}`} aria-hidden />
+                <span className={styles.visuallyHidden}>{link.label}</span>
+              </Link>
+            ))}
           </div>
         </nav>
 
@@ -132,18 +150,17 @@ export default function Header() {
             ))}
           </div>
           <div className={styles.mobileSocials}>
-            <Link
-              className={styles.mobileSocialLink}
-              href="https://www.instagram.com/ds_capture_portraits/"
-            >
-              Instagram
-            </Link>
-            <Link
-              className={styles.mobileSocialLink}
-              href="https://www.linkedin.com/in/dawid-chmielewski-860308209/"
-            >
-              LinkedIn
-            </Link>
+            {SOCIAL_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                className={styles.mobileSocialLink}
+                href={link.href}
+                aria-label={link.label}
+              >
+                <i className={`bi ${link.icon}`} aria-hidden />
+                <span className={styles.visuallyHidden}>{link.label}</span>
+              </Link>
+            ))}
           </div>
         </nav>
       </div>
