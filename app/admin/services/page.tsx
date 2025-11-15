@@ -38,7 +38,7 @@ type ServiceRecord = {
   gradient_start: string | null;
   gradient_end: string | null;
   image_path: string | null;
-  service_slide_images: ServiceSlideImageRecord[] | null;
+  service_slide_images: ServiceSlideImageRecord[] | ServiceSlideImageRecord | null;
   service_portfolio_projects: ServicePortfolioAssignment[] | null;
 };
 
@@ -90,6 +90,16 @@ const parseMultilineInput = (input: string) =>
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
+function normalizeServiceSlideImages(
+  images: ServiceRecord["service_slide_images"],
+): ServiceSlideImageRecord[] {
+  if (!images) {
+    return [];
+  }
+
+  return Array.isArray(images) ? images : [images];
+}
+
 function mapServiceToForm(service: ServiceRecord): ServiceFormState {
   const primaryImage = getPrimaryServiceImage(service);
   const imagePath = primaryImage?.file_path ?? service.image_path ?? "";
@@ -125,7 +135,7 @@ function mapServiceToForm(service: ServiceRecord): ServiceFormState {
 }
 
 function getPrimaryServiceImage(service: ServiceRecord): ServiceSlideImageRecord | null {
-  const images = service.service_slide_images ?? [];
+  const images = normalizeServiceSlideImages(service.service_slide_images);
   if (images.length === 0) {
     return null;
   }
@@ -401,9 +411,9 @@ export default function AdminServicesPage() {
               return service;
             }
 
-            const remainingImages = (service.service_slide_images ?? []).filter(
-              (image) => image.id !== finalImage.id,
-            );
+            const remainingImages = normalizeServiceSlideImages(
+              service.service_slide_images,
+            ).filter((image) => image.id !== finalImage.id);
 
             return {
               ...service,
