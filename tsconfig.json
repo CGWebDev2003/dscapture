@@ -23,7 +23,8 @@
       "swiper/react": ["./lib/swiper/Swiper"],
       "swiper/modules": ["./lib/swiper/modules"],
       "swiper/css": ["./lib/swiper/swiper.css"],
-      "swiper/css/pagination": ["./lib/swiper/pagination.css"]
+      "swiper/css/pagination": ["./lib/swiper/pagination.css"],
+      "swiper/css/navigation": ["./lib/swiper/swiper.css"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
