@@ -1,16 +1,13 @@
 "use client";
 
-import SwiperCore, { Navigation, Pagination } from "swiper";
+import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 
-// Swiper initialisieren (wichtig bei älteren Versionen)
-SwiperCore.use([Navigation, Pagination]);
-
 // Styles laden
-import "swiper/swiper.min.css";
-import "swiper/components/navigation/navigation.min.css";
-import "swiper/components/pagination/pagination.min.css";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 type SlideProject = {
   label: string;
@@ -81,6 +78,7 @@ export default function ServiceSwiper() {
       <button className="nav-btn nav-btn-next">next</button>
 
       <Swiper
+        modules={[Navigation, Pagination]}
         slidesPerView={1}
         spaceBetween={32}
         navigation={{
