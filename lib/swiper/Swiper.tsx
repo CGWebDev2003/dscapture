@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface SwiperBreakpointOptions {
   slidesPerView?: number;
@@ -17,6 +17,7 @@ interface SwiperProps {
   spaceBetween?: number;
   slidesPerView?: number;
   breakpoints?: Record<number, SwiperBreakpointOptions>;
+  navigation?: boolean;
 }
 
 interface SwiperSlideProps {
@@ -50,6 +51,7 @@ const Swiper = ({
   spaceBetween = 0,
   slidesPerView = 1,
   breakpoints = {},
+  navigation = false,
 }: SwiperProps) => {
   const slides = useMemo(() => {
     return (Array.isArray(children) ? children : [children]).filter(Boolean) as ReactNode[];
@@ -84,6 +86,24 @@ const Swiper = ({
   }, [currentSlidesPerView, slides.length]);
 
   const maxIndex = Math.max(slides.length - currentSlidesPerView, 0);
+  const hasMultiplePages = maxIndex > 0;
+  const handlePrev = useCallback(() => {
+    setActiveIndex((prev) => {
+      if (!hasMultiplePages) {
+        return 0;
+      }
+      return prev === 0 ? maxIndex : prev - 1;
+    });
+  }, [hasMultiplePages, maxIndex]);
+
+  const handleNext = useCallback(() => {
+    setActiveIndex((prev) => {
+      if (!hasMultiplePages) {
+        return 0;
+      }
+      return prev === maxIndex ? 0 : prev + 1;
+    });
+  }, [hasMultiplePages, maxIndex]);
   const translatePercentage = activeIndex * (100 / currentSlidesPerView);
 
   return (
@@ -105,6 +125,27 @@ const Swiper = ({
           </div>
         ))}
       </div>
+
+      {navigation && hasMultiplePages && (
+        <>
+          <button
+            type="button"
+            className="swiper-button-prev"
+            aria-label="Vorheriger Slide"
+            onClick={handlePrev}
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="swiper-button-next"
+            aria-label="Nächster Slide"
+            onClick={handleNext}
+          >
+            ›
+          </button>
+        </>
+      )}
 
       {pagination && (
         <div className="swiper-pagination">
