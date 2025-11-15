@@ -22,10 +22,12 @@ const socialLinks = [
   {
     href: "https://www.instagram.com/ds_capture_portraits/",
     label: "Instagram",
+    icon: "bi-instagram",
   },
   {
     href: "https://www.linkedin.com/in/dawid-chmielewski-860308209/",
     label: "LinkedIn",
+    icon: "bi-linkedin",
   },
 ];
 
@@ -90,8 +92,14 @@ export default function Footer() {
             </Link>
             <div className={styles.socialLinks}>
               {socialLinks.map((link) => (
-                <Link key={link.href} className={styles.socialLink} href={link.href}>
-                  {link.label}
+                <Link
+                  key={link.href}
+                  className={styles.socialLink}
+                  href={link.href}
+                  aria-label={link.label}
+                >
+                  <i className={`bi ${link.icon}`} aria-hidden />
+                  <span className={styles.visuallyHidden}>{link.label}</span>
                 </Link>
               ))}
             </div>
