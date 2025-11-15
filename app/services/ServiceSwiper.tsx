@@ -11,6 +11,7 @@ import type { ServiceSwiperProps } from "./types";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import ContactButton from "@/components/buttons/contactButton/ContactButton";
 
 const FALLBACK_GRADIENT_START = "#111827";
 const FALLBACK_GRADIENT_END = "#1f2937";
@@ -80,9 +81,7 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
                   <h2>{service.headline}</h2>
                   <p>{service.subline}</p>
 
-                  <Link href="/kontakt" className="contact-btn">
-                    Jetzt anfragen
-                  </Link>
+                  <ContactButton />
 
                   {service.projects.length > 0 && (
                     <div className="projects">
