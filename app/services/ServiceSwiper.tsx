@@ -334,6 +334,11 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
           }
         }
 
+        :global(.swiper-button-prev),
+        :global(.swiper-button-next) {
+          display: none;
+        }
+
         :global(.swiper-pagination) {
           bottom: -0.5rem !important;
         }
