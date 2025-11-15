@@ -46,8 +46,10 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
       <Swiper
         modules={[Navigation, Pagination]}
         slidesPerView={1}
-        spaceBetween={32}
-        navigation
+        navigation={{
+          nextEl: ".nav-btn-next",
+          prevEl: ".nav-btn-prev",
+        }}
         pagination={{
           el: ".swiper-pagination",
           clickable: true,
@@ -159,7 +161,6 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
           color: #f8fafc;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 28px 60px rgba(15, 23, 42, 0.35);
         }
 
         @media (max-width: 900px) {
