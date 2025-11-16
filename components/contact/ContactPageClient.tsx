@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { logUserAction } from "@/lib/logger";
-import { sendContactNotification } from "@/lib/email/sendContactNotification";
 import styles from "@/app/kontakt/contact.module.css";
 
 const ContactPageClient = () => {
@@ -77,37 +76,6 @@ const ContactPageClient = () => {
         hasPhone: Boolean(trimmedPhone),
       },
     });
-
-    try {
-      await sendContactNotification({
-        name: trimmedName,
-        email: trimmedEmail,
-        subject: trimmedSubject,
-        phone: trimmedPhone,
-        message: trimmedMessage,
-        hasAcceptedPrivacy,
-        submittedAt: new Date().toISOString(),
-      });
-    } catch (notificationError) {
-      console.error("Fehler beim Versenden der Kontaktbenachrichtigung:", notificationError);
-      await logUserAction({
-        action: "contact_notification_failed",
-        context: "public",
-        userEmail: trimmedEmail,
-        description: "Kontaktformular wurde gespeichert, aber die E-Mail-Benachrichtigung ist fehlgeschlagen.",
-        metadata: {
-          error:
-            notificationError instanceof Error ? notificationError.message : String(notificationError),
-          hasSubject: Boolean(trimmedSubject),
-          hasPhone: Boolean(trimmedPhone),
-        },
-      });
-      setIsSubmitting(false);
-      setError(
-        "Deine Nachricht wurde gespeichert, aber die E-Mail-Benachrichtigung konnte nicht versendet werden. Bitte kontaktiere uns direkt per E-Mail.",
-      );
-      return;
-    }
 
     setIsSubmitting(false);
 
