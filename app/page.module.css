@@ -401,6 +401,8 @@
 
   .photographerWrapper {
     width: min(720px, 90vw);
+    text-align: center;
+    text-align: center;
   }
 
   .textContainer {
