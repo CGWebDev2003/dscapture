@@ -437,10 +437,14 @@
 
   .reviewsWrapper {
     gap: 1.75rem;
+    margin-left: 1rem;
+    /* background-color: aqua; */
   }
 
   .reviewsScroller {
     gap: 1.25rem;
+    width: 100%;
+    margin-left: 1rem;
   }
 
   .reviewCard {
