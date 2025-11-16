@@ -41,12 +41,45 @@ const SOCIAL_LINKS: SocialLink[] = [
 export default function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isHomeHeaderHidden, setIsHomeHeaderHidden] = useState(false);
 
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
   const isHome = pathname === "/" || pathname === null;
+
+  useEffect(() => {
+    if (!isHome) {
+      setIsHomeHeaderHidden(false);
+      return;
+    }
+
+    const rootFontSize = Number.parseFloat(
+      getComputedStyle(document.documentElement).fontSize || "16"
+    );
+    const hideThreshold = rootFontSize * 3;
+
+    const updateVisibility = () => {
+      const scrollY = window.scrollY;
+
+      if (scrollY === 0) {
+        setIsHomeHeaderHidden((current) => (current ? false : current));
+        return;
+      }
+
+      if (scrollY > hideThreshold) {
+        setIsHomeHeaderHidden((current) => (current ? current : true));
+      }
+    };
+
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+    };
+  }, [isHome]);
   const navLinkClassName = useMemo(
     () =>
       [styles.headerNavLink, isHome ? styles.headerNavLinkHome : null]
@@ -63,6 +96,7 @@ export default function Header() {
     styles.mainHeader,
     isHome ? styles.mainHeaderHome : styles.mainHeaderDefault,
     isMenuOpen ? styles.headerExpanded : null,
+    isHome && isHomeHeaderHidden ? styles.mainHeaderHidden : null,
   ]
     .filter(Boolean)
     .join(" ");
