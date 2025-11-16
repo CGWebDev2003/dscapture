@@ -122,10 +122,11 @@
 }
 
 .projectsGrid {
-  display: grid;
+  display: flex;
   gap: clamp(1rem, 2vw, 1.75rem);
-  --project-card-min-width: clamp(240px, 25vw, 360px);
-  grid-template-columns: repeat(auto-fit, minmax(var(--project-card-min-width), 1fr));
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x proximity;
 }
 
 .projectCardWrapper {
@@ -147,8 +148,8 @@
 }
 
 .projectCard {
-  width: 100%;
-  height: 100%;
+  flex: 0 0 15rem;
+  width: 15rem;
   position: relative;
   border-radius: 28px;
   overflow: hidden;
@@ -156,6 +157,7 @@
   --project-card-aspect-ratio: 3 / 4;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   color: white;
+  scroll-snap-align: start;
 }
 
 .projectCardWrapper:hover .projectCard,
@@ -279,10 +281,6 @@
   .projectColumn {
     align-items: stretch;
   }
-
-  .projectsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(min(320px, 45vw), 1fr));
-  }
 }
 
 @media (max-width: 768px) {
@@ -295,7 +293,7 @@
   }
 
   .projectsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(min(320px, 70vw), 1fr));
+    gap: 1.25rem;
   }
 }
 
@@ -321,6 +319,6 @@
   }
 
   .projectsGrid {
-    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
