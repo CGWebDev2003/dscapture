@@ -323,8 +323,4 @@
   .projectsGrid {
     grid-template-columns: 1fr;
   }
-
-  .projectsGrid {
-    grid-template-columns: 1fr;
-  }
 }
