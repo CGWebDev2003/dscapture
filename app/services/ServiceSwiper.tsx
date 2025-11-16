@@ -299,14 +299,14 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
           opacity: 0.9;
         }
 
-        .projects ul {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.75rem 1.25rem;
-        }
+          .projects ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.25rem;
+          }
 
         .projects-swiper {
           width: 100%;
