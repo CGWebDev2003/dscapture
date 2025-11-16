@@ -20,10 +20,22 @@ const FALLBACK_GRADIENT_END = "#1f2937";
 
 export default function ServiceSwiper({ services }: ServiceSwiperProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setActiveIndex(0);
   }, [services]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+    const handleMatchChange = () => setIsMobile(mediaQuery.matches);
+
+    handleMatchChange();
+    mediaQuery.addEventListener("change", handleMatchChange);
+
+    return () => mediaQuery.removeEventListener("change", handleMatchChange);
+  }, []);
 
   const activeService = useMemo(() => services[activeIndex] ?? null, [activeIndex, services]);
 
@@ -90,21 +102,44 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
                   {service.projects.length > 0 && (
                     <div className="projects">
                       <span className="projects-label">Ausgewählte Projekte:</span>
-                      <ul>
-                        {service.projects.map((project) => {
-                          const slug = project.slug?.trim();
-                          const href = slug ? `/portfolio/${slug}` : undefined;
-                          return (
-                            <li key={project.id}>
-                              {href ? (
-                                <Link href={href}>{project.title}</Link>
-                              ) : (
-                                <span>{project.title}</span>
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
+
+                      {isMobile ? (
+                        <Swiper
+                          className="projects-swiper"
+                          slidesPerView={1.15}
+                          spaceBetween={16}
+                          pagination={{
+                            el: `.projects-pagination-${service.id}`,
+                            clickable: true,
+                          }}
+                        >
+                          {service.projects.map((project) => {
+                            const slug = project.slug?.trim();
+                            const href = slug ? `/portfolio/${slug}` : undefined;
+                            return (
+                              <SwiperSlide key={project.id}>
+                                <div className="project-pill">
+                                  {href ? <Link href={href}>{project.title}</Link> : <span>{project.title}</span>}
+                                </div>
+                              </SwiperSlide>
+                            );
+                          })}
+                        </Swiper>
+                      ) : (
+                        <ul>
+                          {service.projects.map((project) => {
+                            const slug = project.slug?.trim();
+                            const href = slug ? `/portfolio/${slug}` : undefined;
+                            return (
+                              <li key={project.id}>
+                                {href ? <Link href={href}>{project.title}</Link> : <span>{project.title}</span>}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+
+                      <div className={`projects-pagination projects-pagination-${service.id}`} />
                     </div>
                   )}
                 </div>
@@ -273,6 +308,19 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
           gap: 0.75rem 1.25rem;
         }
 
+        .projects-swiper {
+          width: 100%;
+          padding-bottom: 0.5rem;
+        }
+
+        .project-pill {
+          border: 1px solid rgba(248, 250, 252, 0.35);
+          border-radius: 999px;
+          padding: 0.75rem 1rem;
+          text-align: center;
+          background: rgba(15, 23, 42, 0.25);
+        }
+
         .projects a {
           color: #f8fafc;
           text-decoration: none;
@@ -287,6 +335,41 @@ export default function ServiceSwiper({ services }: ServiceSwiperProps) {
 
         .projects span {
           color: rgba(248, 250, 252, 0.7);
+        }
+
+        .project-pill a,
+        .project-pill span {
+          border-bottom: none;
+          color: #f8fafc;
+          font-weight: 600;
+        }
+
+        .projects-pagination {
+          margin-top: 0.25rem;
+          display: none;
+        }
+
+        :global(.projects-pagination .swiper-pagination-bullet) {
+          width: 8px;
+          height: 8px;
+          background: rgba(248, 250, 252, 0.35);
+          opacity: 1;
+        }
+
+        :global(.projects-pagination .swiper-pagination-bullet-active) {
+          background: rgba(248, 250, 252, 0.9);
+        }
+
+        @media (max-width: 768px) {
+          .projects ul {
+            flex-wrap: wrap;
+          }
+
+          .projects-pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.35rem;
+          }
         }
 
         :global(.swiper-pagination) {
