@@ -13,6 +13,7 @@ import styles from "./ToastProvider.module.css";
 export type ToastType = "success" | "error" | "info";
 
 export interface ShowToastOptions {
+  title?: string;
   message: string;
   type?: ToastType;
   duration?: number;
@@ -42,10 +43,11 @@ export function ToastProvider({
   }, []);
 
   const showToast = useCallback(
-    ({ message, type = "info", duration = 5000 }: ShowToastOptions) => {
+    ({ title = "", message, type = "info", duration = 5000 }: ShowToastOptions) => {
       setToasts((previous) => {
         const nextToast: Toast = {
           id: ++toastIdCounter,
+          title,
           message,
           type,
           duration,
@@ -100,7 +102,10 @@ function ToastItem({
       role={role}
       aria-live={ariaLive}
     >
-      <span className={styles.message}>{toast.message}</span>
+      <div className={styles.content}>
+        {toast.title ? <strong className={styles.title}>{toast.title}</strong> : null}
+        <span className={styles.message}>{toast.message}</span>
+      </div>
       <button
         type="button"
         className={styles.closeButton}
