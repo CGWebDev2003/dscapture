@@ -13,14 +13,16 @@ type ServiceSlideImageRecord = {
   updated_at: string | null;
 };
 
+type PortfolioProjectRecord = {
+  id: string | null;
+  title: string | null;
+  slug: string | null;
+};
+
 type ServicePortfolioProjectRecord = {
   id: string;
   display_order: number | null;
-  portfolio_projects: {
-    id: string | null;
-    title: string | null;
-    slug: string | null;
-  } | null;
+  portfolio_projects: PortfolioProjectRecord | PortfolioProjectRecord[] | null;
 };
 
 type ServiceRecord = {
@@ -117,6 +119,16 @@ function sanitizeStringArray(values: string[] | null | undefined): string[] {
     .filter((value) => value.length > 0);
 }
 
+function resolvePortfolioProject(record: ServicePortfolioProjectRecord): PortfolioProjectRecord | null {
+  const projects = record.portfolio_projects;
+
+  if (!projects) {
+    return null;
+  }
+
+  return Array.isArray(projects) ? projects[0] ?? null : projects;
+}
+
 function mapServiceRecord(record: ServiceRecord): ServiceSlideData {
   const label = record.label?.trim() || "Service";
   const headline = record.headline?.trim() || label;
@@ -131,11 +143,12 @@ function mapServiceRecord(record: ServiceRecord): ServiceSlideData {
 
   const sortedProjects = (record.service_portfolio_projects ?? [])
     .map((assignment) => {
-      if (!assignment?.portfolio_projects) {
+      const project = assignment ? resolvePortfolioProject(assignment) : null;
+
+      if (!project) {
         return null;
       }
 
-      const project = assignment.portfolio_projects;
       const title = project.title?.trim();
 
       if (!title) {
