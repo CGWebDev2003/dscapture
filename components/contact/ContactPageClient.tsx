@@ -13,13 +13,13 @@ const EMAILJS_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
 const EMAILJS_CONFIG = {
   serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
   templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-  publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+  userId: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
 };
 
 const sendEmailNotification = async (payload: ContactEmailPayload) => {
-  const { serviceId, templateId, publicKey } = EMAILJS_CONFIG;
+  const { serviceId, templateId, userId } = EMAILJS_CONFIG;
 
-  if (!serviceId || !templateId || !publicKey) {
+  if (!serviceId || !templateId || !userId) {
     throw new Error("EmailJS ist nicht korrekt konfiguriert.");
   }
 
@@ -31,8 +31,7 @@ const sendEmailNotification = async (payload: ContactEmailPayload) => {
     body: JSON.stringify({
       service_id: serviceId,
       template_id: templateId,
-      public_key: publicKey,
-      user_id: publicKey,
+      user_id: userId,
       template_params: buildContactTemplateParams(payload),
     }),
   });
