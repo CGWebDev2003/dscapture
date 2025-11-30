@@ -50,7 +50,7 @@
   border: 1px solid rgba(214, 69, 69, 0.18);
 }
 
-details {
+:global(details) {
   color: rgba(32, 43, 72, 0.7);
 }
 
