@@ -86,6 +86,8 @@ export default function AdminHomepageGalleryPage() {
   const handleUpload = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const formElement = event.currentTarget;
+
     if (!uploadFile) {
       showToast({
         message: "Bitte wähle zuerst eine Bilddatei aus.",
@@ -189,7 +191,7 @@ export default function AdminHomepageGalleryPage() {
 
       setUploadAltText("");
       setUploadFile(null);
-      event.currentTarget.reset();
+      formElement.reset();
 
       await logUserAction({
         action: "homepage_gallery_image_uploaded",
