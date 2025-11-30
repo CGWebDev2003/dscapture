@@ -1,5 +1,20 @@
 create extension if not exists "uuid-ossp";
 
+-- Ensure admin helper exists for policies in environments where earlier migrations haven't run yet
+create or replace function public.is_admin(check_user_id uuid)
+returns boolean
+language sql
+stable
+as $$
+  select check_user_id is not null
+    and exists (
+      select 1
+      from public."adminUsers" au
+      where au.user_id = check_user_id
+        and coalesce(au.role, 'user') = 'admin'
+    );
+$$;
+
 create table if not exists public.homepage_gallery_images (
   id uuid primary key default uuid_generate_v4(),
   file_path text not null,
