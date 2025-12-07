@@ -44,6 +44,109 @@ type ServiceRecord = {
 const FALLBACK_GRADIENT_START = "#111827";
 const FALLBACK_GRADIENT_END = "#1f2937";
 
+const FALLBACK_SERVICES: ServiceSlideData[] = [
+  {
+    id: "service-branding",
+    slug: "branding",
+    label: "Branding & Identity",
+    headline: "Markenerlebnisse, die im Kopf bleiben",
+    subline:
+      "Wir entwickeln Bildwelten, die deine Marke unverwechselbar machen – von Kampagnen bis Social Content.",
+    infoTitle: "Branding mit Charakter",
+    infoParagraphs: [
+      "Wir übersetzen deine Markenwerte in starke Visuals und Storylines, die auf jedem Kanal funktionieren.",
+      "Durch enges Sparring mit deinem Team entstehen Moodboards, Shoot-Konzepte und Visual Guidelines, die langfristig tragen.",
+    ],
+    infoBulletPoints: [
+      "Mood- und Shot-Planning inklusive Locationscouting",
+      "Creative Direction am Set und in der Postproduktion",
+      "Lieferformate für Social, Web und Print",
+    ],
+    gradientStart: "#0f172a",
+    gradientEnd: "#1f2937",
+    imageUrl: null,
+    imageAlt: "Branding Service",
+    projects: [
+      {
+        id: "branding-projekt-1",
+        title: "Rebranding für Tech-Startup",
+        slug: null,
+      },
+      {
+        id: "branding-projekt-2",
+        title: "Kampagne für Sustainable Fashion",
+        slug: null,
+      },
+    ],
+  },
+  {
+    id: "service-event",
+    slug: "event",
+    label: "Event & Recap",
+    headline: "Events emotional festhalten",
+    subline: "Wir erzählen die Energie deines Events in Bildern und Clips, die zum Teilen einladen.",
+    infoTitle: "Storytelling vor Ort",
+    infoParagraphs: [
+      "Mit einem eingespielten Team fangen wir Schlüsselmomente, Stimmungen und Details ein.",
+      "Von Teaser bis Aftermovie bekommst du Content, der deine Community mitnimmt und neue Gäste begeistert.",
+    ],
+    infoBulletPoints: [
+      "Multicam-Setup für Bühne und Crowd",
+      "Schnelle Turnarounds für Social Media",
+      "Highlight-Galerien und kurze Recap-Filme",
+    ],
+    gradientStart: "#111827",
+    gradientEnd: "#0ea5e9",
+    imageUrl: null,
+    imageAlt: "Event Service",
+    projects: [
+      {
+        id: "event-projekt-1",
+        title: "Festival Recap",
+        slug: null,
+      },
+      {
+        id: "event-projekt-2",
+        title: "Leadership Summit",
+        slug: null,
+      },
+    ],
+  },
+  {
+    id: "service-production",
+    slug: "produktion",
+    label: "Produktion & Studio",
+    headline: "Content-Produktionen aus einem Guss",
+    subline: "Ob Werbespot, Produktshooting oder Social-Serie – wir liefern fertige Assets ohne Reibungsverluste.",
+    infoTitle: "Effizient vom Konzept bis zum Export",
+    infoParagraphs: [
+      "Wir organisieren Casting, Location, Licht-Setup und Postproduktion aus einer Hand.",
+      "Dank klarer Abläufe erhältst du pünktlich produzierte Assets, die direkt einsatzbereit sind.",
+    ],
+    infoBulletPoints: [
+      "Storyboard, Drehplan und Set-Betreuung",
+      "Studio-Produktionen inkl. Ton & Motion",
+      "Master- und Cutdowns für verschiedene Plattformen",
+    ],
+    gradientStart: "#0b1120",
+    gradientEnd: "#4f46e5",
+    imageUrl: null,
+    imageAlt: "Produktion Service",
+    projects: [
+      {
+        id: "produktion-projekt-1",
+        title: "Produktlaunch Kampagne",
+        slug: null,
+      },
+      {
+        id: "produktion-projekt-2",
+        title: "Studio-Serie für Social",
+        slug: null,
+      },
+    ],
+  },
+];
+
 const SERVICE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_BUCKET ?? "service-carousel";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
@@ -196,10 +299,16 @@ async function fetchServices(): Promise<ServiceSlideData[]> {
 
   if (error) {
     console.error("Fehler beim Laden der Services:", error);
-    return [];
+    return FALLBACK_SERVICES;
   }
 
-  return (data ?? []).map(mapServiceRecord);
+  const mapped = (data ?? []).map(mapServiceRecord);
+
+  if (mapped.length === 0) {
+    return FALLBACK_SERVICES;
+  }
+
+  return mapped;
 }
 
 export default async function ServicesPage() {
