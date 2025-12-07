@@ -44,6 +44,7 @@ export default function AdminHomepageHeroPage() {
       const { data, error } = await supabase
         .from("homepage_hero_content")
         .select("id, heading, subheading, cta_label")
+        .eq("singleton_key", "hero")
         .maybeSingle();
 
       if (error) {

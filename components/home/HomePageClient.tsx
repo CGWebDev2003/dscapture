@@ -168,6 +168,7 @@ const HomePageClient = () => {
       const heroContentPromise = supabase
         .from("homepage_hero_content")
         .select("heading, subheading, cta_label")
+        .eq("singleton_key", "hero")
         .maybeSingle();
       const uspPromise = supabase
         .from("homepage_usps")
