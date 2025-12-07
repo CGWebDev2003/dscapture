@@ -544,7 +544,10 @@ const HomePageClient = () => {
               </article>
             ))}
           </div>
-
+            <div className={styles.galeryButtonBox}>
+              {/* <Link className="primaryButton" href="/kontakt" aria-label="Kontakt">Jetzt Strategiegespräch vereinbahren</Link> */}
+              <ContactButton />
+            </div>
         </div>
       </section>
 
