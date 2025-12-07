@@ -50,6 +50,18 @@ type GalleryBackground = {
   public_url: string;
 };
 
+type HeroContent = {
+  heading: string;
+  subheading: string;
+  ctaLabel: string;
+};
+
+const FALLBACK_HERO_CONTENT: HeroContent = {
+  heading: "Visuelle Exzellenz. Digitale Präzision.",
+  subheading: "DS_Capture vereint Design, Strategie und Technologie zu einem klaren Markenauftritt.",
+  ctaLabel: "Jetzt Kontaktieren",
+};
+
 const FALLBACK_USP_ITEMS: UspItem[] = [
   {
     title: "Ganzheitliche Markenstrategie",
@@ -132,6 +144,7 @@ const HomePageClient = () => {
   const { scrollY } = useScroll();
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [overlayImageUrl, setOverlayImageUrl] = useState<string | null>(null);
+  const [heroContent, setHeroContent] = useState<HeroContent>(FALLBACK_HERO_CONTENT);
   const [uspItems, setUspItems] = useState<UspItem[]>(FALLBACK_USP_ITEMS);
   const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS);
   const [photographerIntro, setPhotographerIntro] =
@@ -152,6 +165,11 @@ const HomePageClient = () => {
       const imagePromise = supabase
         .from("homepage_images")
         .select("image_type, public_url");
+      const heroContentPromise = supabase
+        .from("homepage_hero_content")
+        .select("heading, subheading, cta_label")
+        .eq("singleton_key", "hero")
+        .maybeSingle();
       const uspPromise = supabase
         .from("homepage_usps")
         .select("title, description, display_order")
@@ -191,6 +209,7 @@ const HomePageClient = () => {
 
       const [
         imageResult,
+        heroContentResult,
         uspResult,
         reviewResult,
         photographerIntroResult,
@@ -200,6 +219,7 @@ const HomePageClient = () => {
         galleryBackgroundResult,
       ] = await Promise.all([
         imagePromise,
+        heroContentPromise,
         uspPromise,
         reviewsPromise,
         photographerIntroPromise,
@@ -226,6 +246,20 @@ const HomePageClient = () => {
             setOverlayImageUrl(item.public_url);
           }
         });
+      }
+
+      const { data: heroData, error: heroError } = heroContentResult;
+
+      if (heroError) {
+        if (heroError.code !== "PGRST116") {
+          console.error("Fehler beim Laden des Hero-Textes:", heroError.message);
+        }
+      } else if (heroData) {
+        const heading = heroData.heading?.trim() || FALLBACK_HERO_CONTENT.heading;
+        const subheading = heroData.subheading?.trim() || FALLBACK_HERO_CONTENT.subheading;
+        const ctaLabel = heroData.cta_label?.trim() || FALLBACK_HERO_CONTENT.ctaLabel;
+
+        setHeroContent({ heading, subheading, ctaLabel });
       }
 
       const { data: uspData, error: uspError } = uspResult;
@@ -416,10 +450,10 @@ const HomePageClient = () => {
             <Image src={overlaySrc} alt="Overlay" width={350} height={450} className={styles.overlay} />
 
             <div className={styles.textContainer}>
-              <h1>Visuelle Exzellenz. Digitale Präzision.</h1>
-              <p>DS_Capture vereint Design, Strategie und Technologie zu einem klaren Markenauftritt.</p>
+              <h1>{heroContent.heading}</h1>
+              {heroContent.subheading ? <p>{heroContent.subheading}</p> : null}
               <div className={styles.buttonBox}>
-                <ContactButton />
+                <ContactButton label={heroContent.ctaLabel} />
               </div>
             </div>
           </div>
