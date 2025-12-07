@@ -132,6 +132,13 @@ const AdminSidebar = () => {
                         label: "Homepage Hero Manager",
                     },
                     {
+                        href: "/asdf/homepage/hero",
+                        icon: "bi-type",
+                        label: "Homepage Hero-Texte",
+                        matchPath: (currentPath: string) =>
+                            currentPath.startsWith("/asdf/homepage/hero"),
+                    },
+                    {
                         href: "/asdf/homepage/usps",
                         icon: "bi-stars",
                         label: "Homepage USP-Punkte",
