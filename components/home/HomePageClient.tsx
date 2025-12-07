@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import ContactButton from "../buttons/contactButton/ContactButton";
 
 import styles from "@/app/page.module.css";
+import Link from "next/link";
 
 const FALLBACK_BACKGROUND = "/DJI_0727.jpg";
 const FALLBACK_OVERLAY = "/dawid3Mask.png";
@@ -573,6 +574,9 @@ const HomePageClient = () => {
               </article>
             ))}
           </div>
+        </div>
+        <div className={styles.benfitButtonBox}>
+          <Link className="primaryButton" href="/portfolio" aria-label="Portfolio">Portfolio <i className="bi bi-arrow-right"></i></Link>
         </div>
       </section>
 
